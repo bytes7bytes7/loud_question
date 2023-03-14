@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../common/application/application.dart';
+import '../../../../common/common.dart';
 import '../../../domain/domain.dart';
 import '../../coordinators/register_coordinator.dart';
 
@@ -38,8 +38,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
     try {
       await _authService.register(name: event.name, password: event.password);
+    } on RequestException catch (e) {
+      emit(state.withError(e.description));
     } catch (e) {
-      // TODO:
       emit(state.withError('Ошибка'));
     }
   }

@@ -34,6 +34,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.3.3
   envied_generator: ^0.3.0
+  flutter_gen_runner: ^5.2.0
   flutter_lints: ^2.0.1
   freezed: ^2.3.2
   injectable_generator: ^2.1.4
@@ -42,3 +43,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/json/
+
+flutter_gen:
+  output: lib/gen/
+
+  integrations:
+    flutter_svg: true
+    flare_flutter: true
+    rive: true
+    lottie: true

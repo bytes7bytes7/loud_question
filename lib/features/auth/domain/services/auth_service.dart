@@ -8,9 +8,12 @@ import '../../auth.dart';
 class AuthService {
   AuthService({
     required AuthProvider authProvider,
-  }) : _authProvider = authProvider;
+    required AuthExceptionProvider authExceptionProvider,
+  })  : _authProvider = authProvider,
+        _authExceptionProvider = authExceptionProvider;
 
   final AuthProvider _authProvider;
+  final AuthExceptionProvider _authExceptionProvider;
   final _userController = BehaviorSubject<User?>();
 
   Stream<User?> get onUserChanged => _userController.stream;
@@ -29,18 +32,27 @@ class AuthService {
   }) async {
     final request = RegisterRequest(name: name, password: password);
 
-    final response = await _authProvider.register(request);
+    try {
+      final response = await _authProvider.register(request);
 
-    response.value.fold(
-      (l) {
-        // TODO: add throwing exceptions
-        _userController.add(null);
-      },
-      (r) {
-        // TODO: save data
-        _userController.add(r.user);
-      },
-    );
+      response.value.fold(
+        (l) {
+          _userController.add(null);
+
+          if (l.title == _authExceptionProvider.nameIsAlreadyInUse) {
+            throw const NameIsAlreadyInUse();
+          } else {
+            throw Exception();
+          }
+        },
+        (r) {
+          // TODO: save data
+          _userController.add(r.user);
+        },
+      );
+    } catch (e) {
+      throw const ServerError();
+    }
   }
 
   Future<void> logIn({
