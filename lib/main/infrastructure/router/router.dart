@@ -31,8 +31,6 @@ abstract class RouterModule {
         const NotFoundRoute().route,
         const LogInRoute().route,
         const RegisterRoute().route,
-        const HomeRoute().route,
-        const SettingsRoute().route,
       ],
     );
   }

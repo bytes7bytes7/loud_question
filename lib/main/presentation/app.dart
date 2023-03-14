@@ -12,8 +12,10 @@ class App extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: _getIt.get<GoRouter>(),
       title: 'Load Question',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+        textTheme: Typography.material2021().black,
+        useMaterial3: true,
       ),
     );
   }

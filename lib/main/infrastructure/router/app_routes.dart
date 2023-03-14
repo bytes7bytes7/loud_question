@@ -1,7 +1,5 @@
 part of 'router.dart';
 
-final _homeNavigatorKey = NavigatorKey();
-
 String _getName(GoRouterState state) => state.name ?? state.subloc;
 
 Map<String, Object?> _getArgs(GoRouterState state) => {
@@ -23,6 +21,36 @@ class _AppRoutes {
         name: _getName(state),
         arguments: _getArgs(state),
         child: const NotFoundScreen(),
+      );
+    },
+  );
+
+  static final register = GoRoute(
+    path: '/register',
+    name: 'register',
+    parentNavigatorKey: _rootKey,
+    pageBuilder: (context, state) {
+      return CustomTransitionPage(
+        key: state.pageKey,
+        name: _getName(state),
+        arguments: _getArgs(state),
+        transitionsBuilder: _rightward,
+        child: const RegisterScreen(),
+      );
+    },
+  );
+
+  static final logIn = GoRoute(
+    path: '/log_in',
+    name: 'log_in',
+    parentNavigatorKey: _rootKey,
+    pageBuilder: (context, state) {
+      return CustomTransitionPage(
+        key: state.pageKey,
+        name: _getName(state),
+        arguments: _getArgs(state),
+        transitionsBuilder: _leftward,
+        child: const LogInScreen(),
       );
     },
   );
