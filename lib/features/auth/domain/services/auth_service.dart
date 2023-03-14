@@ -32,9 +32,9 @@ class AuthService {
   }) async {
     final request = RegisterRequest(name: name, password: password);
 
-    try {
-      final response = await _authProvider.register(request);
+    final future = _authProvider.register(request);
 
+    await future.then((response) {
       response.value.fold(
         (l) {
           _userController.add(null);
@@ -50,9 +50,11 @@ class AuthService {
           _userController.add(r.user);
         },
       );
-    } catch (e) {
+    });
+
+    await future.onError((error, stackTrace) {
       throw const ServerError();
-    }
+    });
   }
 
   Future<void> logIn({

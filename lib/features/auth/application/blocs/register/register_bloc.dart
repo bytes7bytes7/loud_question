@@ -36,8 +36,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       return;
     }
 
+    emit(state.withLoading());
+
     try {
       await _authService.register(name: event.name, password: event.password);
+      emit(state.withoutError());
     } on RequestException catch (e) {
       emit(state.withError(e.description));
     } catch (e) {

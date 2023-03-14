@@ -14,9 +14,10 @@ class RegisterState extends Equatable with Loadable, Errorable {
 
   RegisterState withLoading() => copyWith(isLoading: true);
 
-  RegisterState withError(String error) => copyWith(error: error);
+  RegisterState withError(String error) =>
+      copyWith(error: error, isLoading: false);
 
-  RegisterState withoutError() => copyWith();
+  RegisterState withoutError() => copyWith(isLoading: false);
 
   RegisterState copyWith({
     bool? isLoading,
