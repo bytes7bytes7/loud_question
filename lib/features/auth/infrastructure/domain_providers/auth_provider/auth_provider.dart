@@ -32,4 +32,10 @@ abstract class ProdAuthProvider implements AuthProvider {
   Future<JsonEitherWrapper<ProblemDetails, RegisterResponse>> register(
     @Body() RegisterRequest request,
   );
+
+  @override
+  @POST('/log_in')
+  Future<JsonEitherWrapper<ProblemDetails, LogInResponse>> logIn(
+    @Body() LogInRequest request,
+  );
 }

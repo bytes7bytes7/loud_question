@@ -11,4 +11,7 @@ class ProdAuthExceptionProvider implements AuthExceptionProvider {
 
   @override
   String get nameIsAlreadyInUse => _serverExceptionProvider.nameIsAlreadyInUse;
+
+  @override
+  String get invalidCredentials => _serverExceptionProvider.invalidCredentials;
 }
