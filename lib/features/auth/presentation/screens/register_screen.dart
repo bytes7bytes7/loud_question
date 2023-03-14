@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import '../../../common/presentation/widgets/widgets.dart';
+import '../../application/blocs/register/register_bloc.dart';
 
 const _paddingH = 20.0;
 const _paddingV = 14.0;
@@ -15,6 +19,8 @@ class RegisterScreen extends HookWidget {
     final availableHeight = size.height - viewPadding.top - viewPadding.bottom;
 
     final commonFocusNode = useFocusNode();
+    final loginController = useTextEditingController();
+    final passwordController = useTextEditingController();
 
     return GestureDetector(
       onTap: () {
@@ -25,7 +31,10 @@ class RegisterScreen extends HookWidget {
           child: SafeArea(
             child: SizedBox(
               height: availableHeight,
-              child: const _Body(),
+              child: _Body(
+                loginController: loginController,
+                passwordController: passwordController,
+              ),
             ),
           ),
         ),
@@ -35,7 +44,13 @@ class RegisterScreen extends HookWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body();
+  const _Body({
+    required this.loginController,
+    required this.passwordController,
+  });
+
+  final TextEditingController loginController;
+  final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -46,33 +61,136 @@ class _Body extends StatelessWidget {
         horizontal: _paddingH,
         vertical: _paddingV,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Spacer(),
-          Text(
-            'Регистрация',
-            style: theme.textTheme.headlineMedium,
-          ),
-          const Spacer(),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Логин',
+      child: BlocProvider(
+        create: (context) => RegisterBloc(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            Text(
+              'Регистрация',
+              style: theme.textTheme.headlineMedium,
             ),
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Пароль',
+            const Spacer(),
+            _LoginField(
+              controller: loginController,
             ),
-          ),
-          const Spacer(),
-          ElevatedButton(
-            onPressed: () {},
-            child: const Text('Зарегистрироваться'),
-          ),
-          const Spacer(),
-        ],
+            _PasswordField(
+              controller: passwordController,
+            ),
+            const _ToLogInButton(),
+            const Spacer(),
+            _RegisterButton(
+              loginController: loginController,
+              passwordController: passwordController,
+            ),
+            const Spacer(),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _LoginField extends StatelessWidget {
+  const _LoginField({
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RegisterBloc, RegisterState>(
+      builder: (context, state) {
+        return TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: 'Логин',
+            enabled: !state.isLoading,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PasswordField extends StatelessWidget {
+  const _PasswordField({
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RegisterBloc, RegisterState>(
+      builder: (context, state) {
+        return TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: 'Пароль',
+            enabled: !state.isLoading,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ToLogInButton extends StatelessWidget {
+  const _ToLogInButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RegisterBloc, RegisterState>(
+      builder: (context, state) {
+        return TextButton(
+          onPressed: state.isLoading ? null : () {},
+          child: const Text('Уже есть аккаунт?'),
+        );
+      },
+    );
+  }
+}
+
+class _RegisterButton extends StatelessWidget {
+  const _RegisterButton({
+    required this.loginController,
+    required this.passwordController,
+  });
+
+  final TextEditingController loginController;
+  final TextEditingController passwordController;
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<RegisterBloc>();
+
+    return BlocConsumer<RegisterBloc, RegisterState>(
+      listener: (context, state) {
+        if (state.error.isNotEmpty) {
+          createSnackBar(
+            context,
+            message: state.error,
+          );
+        }
+      },
+      builder: (context, state) {
+        return ElevatedButton(
+          onPressed: state.isLoading
+              ? null
+              : () {
+                  bloc.add(
+                    DoRegisterEvent(
+                      name: loginController.text,
+                      password: passwordController.text,
+                    ),
+                  );
+                },
+          child: const Text('Зарегистрироваться'),
+        );
+      },
     );
   }
 }

@@ -47,11 +47,14 @@ class _Body extends StatelessWidget {
         vertical: _paddingV,
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const Spacer(),
           Text(
             'Вход',
             style: theme.textTheme.headlineMedium,
           ),
+          const Spacer(),
           TextFormField(
             decoration: const InputDecoration(
               labelText: 'Логин',
@@ -62,10 +65,16 @@ class _Body extends StatelessWidget {
               labelText: 'Пароль',
             ),
           ),
+          TextButton(
+            onPressed: () {},
+            child: const Text('Нет аккаунта?'),
+          ),
+          const Spacer(),
           ElevatedButton(
             onPressed: () {},
             child: const Text('Войти'),
           ),
+          const Spacer(),
         ],
       ),
     );
