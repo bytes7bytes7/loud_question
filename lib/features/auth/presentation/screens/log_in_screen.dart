@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../common/presentation/widgets/widgets.dart';
 import '../../application/blocs/log_in/log_in_bloc.dart';
 
 const _paddingH = 20.0;
@@ -172,7 +173,15 @@ class _LogInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<LogInBloc>();
 
-    return BlocBuilder<LogInBloc, LogInState>(
+    return BlocConsumer<LogInBloc, LogInState>(
+      listener: (context, state) {
+        if (state.error.isNotEmpty) {
+          createSnackBar(
+            context,
+            message: state.error,
+          );
+        }
+      },
       builder: (context, state) {
         return ElevatedButton(
           onPressed: state.isLoading
