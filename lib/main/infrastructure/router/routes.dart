@@ -20,3 +20,10 @@ class LogInRoute extends CosyRoute {
   @override
   GoRoute get route => _AppRoutes.logIn;
 }
+
+class HomeRoute extends CosyRoute {
+  const HomeRoute();
+
+  @override
+  GoRoute get route => _AppRoutes.home;
+}

@@ -54,4 +54,19 @@ class _AppRoutes {
       );
     },
   );
+
+  static final home = GoRoute(
+    path: '/',
+    name: 'home',
+    parentNavigatorKey: _rootKey,
+    pageBuilder: (context, state) {
+      return CustomTransitionPage(
+        key: state.pageKey,
+        name: _getName(state),
+        arguments: _getArgs(state),
+        transitionsBuilder: _leftward,
+        child: const HomeScreen(),
+      );
+    },
+  );
 }

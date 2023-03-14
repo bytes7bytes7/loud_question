@@ -19,3 +19,7 @@ class DoRegisterEvent extends RegisterEvent {
   @override
   List<Object?> get props => [name, password];
 }
+
+class OpenLogInRegisterEvent extends RegisterEvent {
+  const OpenLogInRegisterEvent();
+}

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../../common/presentation/widgets/widgets.dart';
 import '../../application/blocs/register/register_bloc.dart';
 
 const _paddingH = 20.0;
 const _paddingV = 14.0;
+final _getIt = GetIt.instance;
 
 class RegisterScreen extends HookWidget {
   const RegisterScreen({super.key});
@@ -62,7 +64,7 @@ class _Body extends StatelessWidget {
         vertical: _paddingV,
       ),
       child: BlocProvider(
-        create: (context) => RegisterBloc(),
+        create: (context) => _getIt.get<RegisterBloc>(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -143,10 +145,14 @@ class _ToLogInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<RegisterBloc>();
+
     return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return TextButton(
-          onPressed: state.isLoading ? null : () {},
+          onPressed: state.isLoading
+              ? null
+              : () => bloc.add(const OpenLogInRegisterEvent()),
           child: const Text('Уже есть аккаунт?'),
         );
       },
@@ -180,14 +186,12 @@ class _RegisterButton extends StatelessWidget {
         return ElevatedButton(
           onPressed: state.isLoading
               ? null
-              : () {
-                  bloc.add(
+              : () => bloc.add(
                     DoRegisterEvent(
                       name: loginController.text,
                       password: passwordController.text,
                     ),
-                  );
-                },
+                  ),
           child: const Text('Зарегистрироваться'),
         );
       },

@@ -1,14 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:url_strategy/url_strategy.dart';
 
-import 'main/infrastructure/injector/injector.dart';
 import 'main/main.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   _configLogger(printLogs: true);
   configInjector(env: 'prod');
+  setPathUrlStrategy();
 
   runApp(const App());
 }
