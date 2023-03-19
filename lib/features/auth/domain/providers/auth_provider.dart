@@ -11,4 +11,8 @@ abstract class AuthProvider {
   Future<JsonEitherWrapper<ProblemDetails, LogInResponse>> logIn(
     LogInRequest request,
   );
+
+  Future<JsonEitherWrapper<ProblemDetails, VerifyTokenResponse>> verifyToken(
+    VerifyTokenRequest request,
+  );
 }

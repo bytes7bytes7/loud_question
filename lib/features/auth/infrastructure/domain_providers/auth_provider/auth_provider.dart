@@ -38,4 +38,10 @@ abstract class ProdAuthProvider implements AuthProvider {
   Future<JsonEitherWrapper<ProblemDetails, LogInResponse>> logIn(
     @Body() LogInRequest request,
   );
+
+  @override
+  @GET('/verify_token')
+  Future<JsonEitherWrapper<ProblemDetails, VerifyTokenResponse>> verifyToken(
+    VerifyTokenRequest request,
+  );
 }
