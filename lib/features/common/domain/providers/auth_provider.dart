@@ -1,5 +1,4 @@
 import 'package:problem_details/problem_details.dart';
-
 import '../../../../utils/json_either_wrapper.dart';
 import '../dto/dto.dart';
 
@@ -12,7 +11,9 @@ abstract class AuthProvider {
     LogInRequest request,
   );
 
-  Future<JsonEitherWrapper<ProblemDetails, VerifyTokenResponse>> verifyToken(
-    VerifyTokenRequest request,
+  Future<JsonEitherWrapper<ProblemDetails, VerifyTokenResponse>> verifyToken();
+
+  Future<JsonEitherWrapper<ProblemDetails, LogOutResponse>> logOut(
+    LogOutRequest request,
   );
 }

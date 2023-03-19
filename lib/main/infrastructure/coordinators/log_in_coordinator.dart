@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../../features/auth/application/application.dart';
-import '../../../features/auth/domain/domain.dart';
+import '../../../features/common/domain/services/auth_service.dart';
 import '../router/router.dart';
 import 'coordinator.dart';
 
@@ -24,7 +24,8 @@ class ProdLogInCoordinator extends Coordinator implements LogInCoordinator {
       final location = goRouter.location;
 
       final isLoggingIn =
-          location == const LogInRoute().namedLocation(goRouter);
+          location == const LogInRoute().namedLocation(goRouter) ||
+              location == '/';
 
       final isRegistering =
           location == const RegisterRoute().namedLocation(goRouter);

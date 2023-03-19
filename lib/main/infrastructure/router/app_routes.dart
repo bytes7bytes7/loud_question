@@ -56,7 +56,7 @@ class _AppRoutes {
   );
 
   static final home = GoRoute(
-    path: '/',
+    path: '/home',
     name: 'home',
     parentNavigatorKey: _rootKey,
     pageBuilder: (context, state) {

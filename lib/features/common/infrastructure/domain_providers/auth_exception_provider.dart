@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../common/common.dart';
-import '../../domain/domain.dart';
+import '../../common.dart';
 
 @Singleton(as: AuthExceptionProvider)
 class ProdAuthExceptionProvider implements AuthExceptionProvider {

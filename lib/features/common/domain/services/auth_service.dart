@@ -4,8 +4,13 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../repositories/interfaces/account_repository.dart';
 import '../../../../utils/json_either_wrapper.dart';
-import '../../../common/domain/domain.dart';
-import '../../auth.dart';
+import '../dto/dto.dart';
+import '../entities/entities.dart';
+import '../exceptions/exceptions.dart';
+import '../providers/auth_exception_provider.dart';
+import '../providers/auth_provider.dart';
+import 'token_service.dart';
+import 'user_service.dart';
 
 @singleton
 class AuthService {
@@ -119,12 +124,32 @@ class AuthService {
     );
   }
 
-  Future<void> _verifyToken() async {
-    const request = VerifyTokenRequest();
+  Future<void> logOut() async {
+    const request = LogOutRequest();
 
+    late JsonEitherWrapper<ProblemDetails, LogOutResponse> response;
+    try {
+      response = await _authProvider.logOut(request);
+    } catch (e) {
+      throw const ServerError();
+    }
+
+    await response.value.fold(
+      (l) async {
+        throw Exception();
+      },
+      (r) async {
+        _userController.add(null);
+        await _accountRepository.removeMyID();
+        await _tokenService.removeToken();
+      },
+    );
+  }
+
+  Future<void> _verifyToken() async {
     late JsonEitherWrapper<ProblemDetails, VerifyTokenResponse> response;
     try {
-      response = await _authProvider.verifyToken(request);
+      response = await _authProvider.verifyToken();
     } catch (e) {
       throw const ServerError();
     }

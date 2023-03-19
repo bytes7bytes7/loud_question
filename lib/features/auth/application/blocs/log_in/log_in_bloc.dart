@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../common/application/application.dart';
 import '../../../../common/domain/exceptions/request_exception.dart';
-import '../../../domain/domain.dart';
+import '../../../../common/domain/services/auth_service.dart';
 import '../../coordinators/log_in_coordinator.dart';
 
 part 'log_in_event.dart';

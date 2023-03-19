@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../common/common.dart';
-import '../../../domain/domain.dart';
 import '../../coordinators/register_coordinator.dart';
 
 part 'register_event.dart';
