@@ -37,4 +37,11 @@ abstract class ProdHomeProvider implements HomeProvider {
   Future<JsonEitherWrapper<ProblemDetails, CreateLobbyResponse>> createLobby(
     @Body() CreateLobbyRequest request,
   );
+
+  @override
+  @POST('/{id}/join')
+  Future<JsonEitherWrapper<ProblemDetails, JoinLobbyResponse>> joinLobby(
+    @Path() String id,
+    @Body() JoinLobbyRequest request,
+  );
 }

@@ -16,10 +16,19 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           _getIt.get<HomeBloc>()..add(const LoadLobbiesHomeEvent()),
-      child: const Scaffold(
-        appBar: _AppBar(),
-        body: _Body(),
-        floatingActionButton: _FAB(),
+      child: Scaffold(
+        appBar: const _AppBar(),
+        body: const _Body(),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            _JoinLobbyFAB(),
+            SizedBox(
+              width: 20,
+            ),
+            _CreateLobbyFAB(),
+          ],
+        ),
       ),
     );
   }
@@ -94,30 +103,6 @@ class _Body extends StatelessWidget {
           );
         }
 
-        if (state.error.isNotEmpty) {
-          return RefreshIndicator(
-            onRefresh: () async => bloc.add(const LoadLobbiesHomeEvent()),
-            child: Column(
-              children: const [
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Center(
-                        child: Text(
-                          'Ошибка',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
         return RefreshIndicator(
           onRefresh: () async => bloc.add(const LoadLobbiesHomeEvent()),
           child: ListView.separated(
@@ -145,8 +130,68 @@ class _Body extends StatelessWidget {
   }
 }
 
-class _FAB extends StatelessWidget {
-  const _FAB();
+class _JoinLobbyFAB extends StatelessWidget {
+  const _JoinLobbyFAB();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+
+    Future<void> openAlert() async {
+      var id = '';
+      var password = '';
+
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Присоединение к лобби'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      id = value;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'ID',
+                    ),
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      password = value;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Пароль',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Присоединиться'),
+                onPressed: () {
+                  bloc.add(JoinLobbyHomeEvent(id: id, password: password));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return FloatingActionButton(
+      heroTag: 'join lobby fab',
+      onPressed: openAlert,
+      child: const Icon(Icons.login),
+    );
+  }
+}
+
+class _CreateLobbyFAB extends StatelessWidget {
+  const _CreateLobbyFAB();
 
   @override
   Widget build(BuildContext context) {
@@ -189,6 +234,7 @@ class _FAB extends StatelessWidget {
     }
 
     return FloatingActionButton(
+      heroTag: 'create lobby fab',
       onPressed: openAlert,
       child: const Icon(Icons.add),
     );

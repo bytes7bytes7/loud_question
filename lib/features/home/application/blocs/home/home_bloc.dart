@@ -26,6 +26,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<LoadLobbiesHomeEvent>(_loadLobbies, transformer: droppable());
     on<OpenLobbyHomeEvent>(_openLobby, transformer: droppable());
     on<CreateLobbyHomeEvent>(_createLobby, transformer: droppable());
+    on<JoinLobbyHomeEvent>(_joinLobby, transformer: droppable());
   }
 
   final AuthService _authService;
@@ -81,13 +82,39 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(state.withLoading());
 
     try {
-      await _homeService.createLobby(password: event.password);
+      final lobby = await _homeService.createLobby(password: event.password);
+
+      _coordinator.openLobby(lobbyID: lobby.id.str);
 
       add(const LoadLobbiesHomeEvent());
     } catch (e) {
       emit(
         state.withError(
           'Ошибка при создании лобби',
+        ),
+      );
+    }
+  }
+
+  Future<void> _joinLobby(
+    JoinLobbyHomeEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      final lobby =
+          await _homeService.joinLobby(id: event.id, password: event.password);
+
+      _coordinator.openLobby(lobbyID: lobby.id.str);
+
+      add(const LoadLobbiesHomeEvent());
+    } on RequestException catch (e) {
+      emit(state.withError(e.description));
+    } catch (e) {
+      emit(
+        state.withError(
+          'Ошибка присоединения к лобби',
         ),
       );
     }

@@ -36,3 +36,16 @@ class CreateLobbyHomeEvent extends HomeEvent {
   @override
   List<Object?> get props => [password];
 }
+
+class JoinLobbyHomeEvent extends HomeEvent {
+  const JoinLobbyHomeEvent({
+    required this.id,
+    required this.password,
+  });
+
+  final String id;
+  final String password;
+
+  @override
+  List<Object?> get props => [id, password];
+}

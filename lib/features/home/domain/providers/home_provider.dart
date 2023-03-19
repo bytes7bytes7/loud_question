@@ -9,4 +9,9 @@ abstract class HomeProvider {
   Future<JsonEitherWrapper<ProblemDetails, CreateLobbyResponse>> createLobby(
     CreateLobbyRequest request,
   );
+
+  Future<JsonEitherWrapper<ProblemDetails, JoinLobbyResponse>> joinLobby(
+    String id,
+    JoinLobbyRequest request,
+  );
 }
