@@ -27,3 +27,19 @@ class HomeRoute extends CosyRoute {
   @override
   GoRoute get route => _AppRoutes.home;
 }
+
+class LobbyRoute extends CosyRoute {
+  const LobbyRoute({
+    required this.lobbyID,
+  });
+
+  final String lobbyID;
+
+  @override
+  Map<String, String> get params => {
+        'lobbyID': lobbyID,
+      };
+
+  @override
+  GoRoute get route => _AppRoutes.lobby;
+}

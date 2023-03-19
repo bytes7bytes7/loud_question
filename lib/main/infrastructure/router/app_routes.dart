@@ -68,5 +68,27 @@ class _AppRoutes {
         child: const HomeScreen(),
       );
     },
+    routes: [
+      lobby,
+    ],
+  );
+
+  static final lobby = GoRoute(
+    path: 'lobby:lobbyID',
+    name: 'lobby',
+    parentNavigatorKey: _rootKey,
+    pageBuilder: (context, state) {
+      final lobbyID = state.params['lobbyID']!;
+
+      return CustomTransitionPage(
+        key: state.pageKey,
+        name: _getName(state),
+        arguments: _getArgs(state),
+        transitionsBuilder: _leftward,
+        child: LobbyScreen(
+          lobbyID: lobbyID,
+        ),
+      );
+    },
   );
 }
