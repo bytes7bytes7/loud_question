@@ -20,11 +20,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required HomeCoordinator coordinator,
   })  : _authService = authService,
         _homeService = homeService,
-  _coordinator =coordinator,
+        _coordinator = coordinator,
         super(const HomeState()) {
     on<LogOutHomeEvent>(_logOut, transformer: droppable());
     on<LoadLobbiesHomeEvent>(_loadLobbies, transformer: droppable());
     on<OpenLobbyHomeEvent>(_openLobby, transformer: droppable());
+    on<CreateLobbyHomeEvent>(_createLobby, transformer: droppable());
   }
 
   final AuthService _authService;
@@ -44,6 +45,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     LoadLobbiesHomeEvent event,
     Emitter<HomeState> emit,
   ) async {
+    emit(state.withLoading());
+
     try {
       final lobbies = await _homeService.load();
 
@@ -66,6 +69,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(
         state.withError(
           'Ошибка загрузки лобби',
+        ),
+      );
+    }
+  }
+
+  Future<void> _createLobby(
+    CreateLobbyHomeEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _homeService.createLobby(password: event.password);
+
+      add(const LoadLobbiesHomeEvent());
+    } catch (e) {
+      emit(
+        state.withError(
+          'Ошибка при создании лобби',
         ),
       );
     }

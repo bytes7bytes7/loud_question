@@ -31,4 +31,10 @@ abstract class ProdHomeProvider implements HomeProvider {
   @override
   @GET('/all')
   Future<JsonEitherWrapper<ProblemDetails, GetLobbiesResponse>> getLobbies();
+
+  @override
+  @POST('/new')
+  Future<JsonEitherWrapper<ProblemDetails, CreateLobbyResponse>> createLobby(
+    @Body() CreateLobbyRequest request,
+  );
 }

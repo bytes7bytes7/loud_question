@@ -16,9 +16,10 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           _getIt.get<HomeBloc>()..add(const LoadLobbiesHomeEvent()),
-      child: Scaffold(
+      child: const Scaffold(
         appBar: _AppBar(),
         body: _Body(),
+        floatingActionButton: _FAB(),
       ),
     );
   }
@@ -140,6 +141,56 @@ class _Body extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _FAB extends StatelessWidget {
+  const _FAB();
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+
+    Future<void> openAlert() async {
+      var password = '';
+
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Создание лобби'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      password = value;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Придумайте пароль',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Создать'),
+                onPressed: () {
+                  bloc.add(CreateLobbyHomeEvent(password: password));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    return FloatingActionButton(
+      onPressed: openAlert,
+      child: const Icon(Icons.add),
     );
   }
 }

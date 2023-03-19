@@ -32,4 +32,24 @@ class HomeService {
       },
     );
   }
+
+  Future<void> createLobby({
+    required String password,
+  }) async {
+    final request = CreateLobbyRequest(password: password);
+
+    late JsonEitherWrapper<ProblemDetails, CreateLobbyResponse> response;
+    try {
+      response = await _homeProvider.createLobby(request);
+
+      response.value.fold(
+        (l) {
+          throw Exception();
+        },
+        (r) {},
+      );
+    } catch (e) {
+      throw Exception();
+    }
+  }
 }

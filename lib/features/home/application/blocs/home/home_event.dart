@@ -25,3 +25,14 @@ class OpenLobbyHomeEvent extends HomeEvent {
   @override
   List<Object?> get props => [lobbyID];
 }
+
+class CreateLobbyHomeEvent extends HomeEvent {
+  const CreateLobbyHomeEvent({
+    required this.password,
+  });
+
+  final String password;
+
+  @override
+  List<Object?> get props => [password];
+}
