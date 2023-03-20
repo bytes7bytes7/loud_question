@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../common/common.dart';
 import '../../../common/presentation/widgets/widgets.dart';
 import '../../application/blocs/lobby/lobby_bloc.dart';
 import '../../application/view_models/lobby_info_vm/lobby_info_vm.dart';
@@ -101,7 +102,11 @@ class _Body extends StatelessWidget {
         }
 
         if (gameState is WaitingForAnswerGameState) {
-          return const SizedBox.shrink();
+          return _AnsweringStateWidget(
+            lobbyBloc: lobbyBloc,
+            lobbyInfo: lobbyInfo,
+            gameState: gameState,
+          );
         }
 
         if (gameState is CheckingAnswerGameState) {
@@ -164,66 +169,101 @@ class _InitStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async => lobbyBloc.add(const LoadLobbyEvent(cached: false)),
-      child: ListView.separated(
-        // info bar, empty box, creator card
-        itemCount: lobbyInfo.guests.length + 3,
-        separatorBuilder: (context, index) {
-          if (index == 1) {
-            // creator bar
-            return const TitleBar(
-              text: 'Я',
-            );
-          }
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async =>
+              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          child: ListView.separated(
+            // info bar, empty box, creator card
+            itemCount: lobbyInfo.guests.length + 3,
+            separatorBuilder: (context, index) {
+              if (index == 1) {
+                // creator bar
+                return const TitleBar(
+                  text: 'Я',
+                );
+              }
 
-          if (index == 2) {
-            // other players bar
-            return TitleBar(
-              text: 'Другие игроки (${lobbyInfo.guests.length})',
-            );
-          }
+              if (index == 2) {
+                // other players bar
+                return TitleBar(
+                  text: 'Другие игроки (${lobbyInfo.guests.length})',
+                );
+              }
 
-          return const Divider();
-        },
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            // info bar
-            return InfoBar(
-              text: 'Готово: ${gameState.readyIDs.length}/'
-                  '${lobbyInfo.guests.length + 1}',
-            );
-          }
+              return const Divider();
+            },
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                // info bar
+                return InfoBar(
+                  text: 'Готово: ${gameState.readyIDs.length}/'
+                      '${lobbyInfo.guests.length + 1}',
+                );
+              }
 
-          if (index == 1) {
-            // empty box
-            return const SizedBox.shrink();
-          }
+              if (index == 1) {
+                // empty box
+                return const SizedBox.shrink();
+              }
 
-          if (index == 2) {
-            // me
-            return UserCard(
-              user: lobbyInfo.me,
-            );
-          }
+              if (index == 2) {
+                // me
+                return UserCard(
+                  user: lobbyInfo.me,
+                );
+              }
 
-          if (lobbyInfo.creator.id != lobbyInfo.me.id) {
-            if (index == 3) {
+              if (lobbyInfo.creator.id != lobbyInfo.me.id) {
+                if (index == 3) {
+                  return UserCard(
+                    user: lobbyInfo.creator,
+                  );
+                }
+
+                return UserCard(
+                  user: lobbyInfo.guests[index - 4],
+                );
+              }
+
               return UserCard(
-                user: lobbyInfo.creator,
+                user: lobbyInfo.guests[index - 3],
               );
-            }
-
-            return UserCard(
-              user: lobbyInfo.guests[index - 4],
-            );
-          }
-
-          return UserCard(
-            user: lobbyInfo.guests[index - 3],
-          );
-        },
-      ),
+            },
+          ),
+        ),
+        if (!gameState.readyIDs.contains(UserID.fromString(lobbyInfo.me.id)))
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: ElevatedButton(
+                child: const Text('Я готов'),
+                onPressed: () {},
+              ),
+            ),
+          ),
+        if (gameState.readyIDs.length == lobbyInfo.guests.length + 1)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: ElevatedButton(
+                child: const Text('Начать игру!'),
+                onPressed: () {},
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -244,46 +284,170 @@ class _PlayingStateWidget extends StatelessWidget {
 
     return RefreshIndicator(
       onRefresh: () async => lobbyBloc.add(const LoadLobbyEvent(cached: false)),
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: SizedBox(
-                  height: size.height - kToolbarHeight - 90,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Осталось',
-                          style: theme.textTheme.headlineMedium,
-                        ),
-                        Text(
-                          '37',
-                          style: theme.textTheme.displayLarge,
-                        ),
-                        if (gameState.question != null) ...[
-                          Text(
-                            'Вопрос',
-                            style: theme.textTheme.titleLarge,
-                          ),
-                          Text(
-                            gameState.question!,
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ],
-                      ],
-                    ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Осталось',
+                    style: theme.textTheme.headlineMedium,
                   ),
+                  Text(
+                    '37',
+                    style: theme.textTheme.displayLarge,
+                  ),
+                  if (gameState.question != null) ...[
+                    Text(
+                      'Вопрос',
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    Text(
+                      gameState.question!,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+          // for refresh indicator
+          ListView(
+            children: [
+              SizedBox(
+                height: size.height,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnsweringStateWidget extends StatelessWidget {
+  const _AnsweringStateWidget({
+    required this.lobbyBloc,
+    required this.lobbyInfo,
+    required this.gameState,
+  });
+
+  final LobbyBloc lobbyBloc;
+  final LobbyInfoVM lobbyInfo;
+  final WaitingForAnswerGameState gameState;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async =>
+              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          child: ListView.separated(
+            // info bar, empty box, creator card
+            itemCount: lobbyInfo.guests.length + 3,
+            separatorBuilder: (context, index) {
+              if (index == 1) {
+                // creator bar
+                return const TitleBar(
+                  text: 'Я',
+                );
+              }
+
+              if (index == 2) {
+                // other players bar
+                return TitleBar(
+                  text: 'Другие игроки (${lobbyInfo.guests.length})',
+                );
+              }
+
+              return const Divider();
+            },
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                // info bar
+                return InfoBar(
+                  text: 'Ответило: ${gameState.hasAnswered.length}/'
+                      '${lobbyInfo.guests.length + 1}',
+                );
+              }
+
+              if (index == 1) {
+                // empty box
+                return const SizedBox.shrink();
+              }
+
+              if (index == 2) {
+                // me
+                return UserCard(
+                  user: lobbyInfo.me,
+                );
+              }
+
+              if (lobbyInfo.creator.id != lobbyInfo.me.id) {
+                if (index == 3) {
+                  return UserCard(
+                    user: lobbyInfo.creator,
+                  );
+                }
+
+                return UserCard(
+                  user: lobbyInfo.guests[index - 4],
+                );
+              }
+
+              return UserCard(
+                user: lobbyInfo.guests[index - 3],
+              );
+            },
+          ),
+        ),
+        if (!gameState.hasAnswered.contains(UserID.fromString(lobbyInfo.me.id)))
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.background,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.shadowColor.withOpacity(0.2),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Ваш ответ...',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {},
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }
