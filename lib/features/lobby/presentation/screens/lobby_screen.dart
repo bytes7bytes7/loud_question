@@ -110,7 +110,11 @@ class _Body extends StatelessWidget {
         }
 
         if (gameState is CheckingAnswerGameState) {
-          return const SizedBox.shrink();
+          return _CheckingStateWidget(
+            lobbyBloc: lobbyBloc,
+            lobbyInfo: lobbyInfo,
+            gameState: gameState,
+          );
         }
 
         return const SizedBox.shrink();
@@ -447,6 +451,132 @@ class _AnsweringStateWidget extends StatelessWidget {
               ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _CheckingStateWidget extends StatelessWidget {
+  const _CheckingStateWidget({
+    required this.lobbyBloc,
+    required this.lobbyInfo,
+    required this.gameState,
+  });
+
+  final LobbyBloc lobbyBloc;
+  final LobbyInfoVM lobbyInfo;
+  final CheckingAnswerGameState gameState;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final rightAnswersAmount = gameState.answers
+        .where(
+          (e) => e.answer.toLowerCase() == gameState.rightAnswer.toLowerCase(),
+        )
+        .length;
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async =>
+              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          child: ListView.separated(
+            // info bar, right answer, empty box, creator card
+            itemCount: lobbyInfo.guests.length + 4,
+            separatorBuilder: (context, index) {
+              if (index == 2) {
+                // creator bar
+                return const TitleBar(
+                  text: 'Я',
+                );
+              }
+
+              if (index == 3) {
+                // other players bar
+                return TitleBar(
+                  text: 'Другие игроки (${lobbyInfo.guests.length})',
+                );
+              }
+
+              return const Divider();
+            },
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                // info bar
+                return InfoBar(
+                  text: 'Верных ответов: $rightAnswersAmount/'
+                      '${lobbyInfo.guests.length + 1}',
+                );
+              }
+
+              if (index == 1) {
+                // right answer
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Правильный ответ',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      Text(
+                        gameState.rightAnswer,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              if (index == 2) {
+                // empty box
+                return const SizedBox.shrink();
+              }
+
+              if (index == 3) {
+                // me
+                return UserCard(
+                  user: lobbyInfo.me,
+                );
+              }
+
+              if (lobbyInfo.creator.id != lobbyInfo.me.id) {
+                if (index == 4) {
+                  return UserCard(
+                    user: lobbyInfo.creator,
+                  );
+                }
+
+                return UserCard(
+                  user: lobbyInfo.guests[index - 5],
+                );
+              }
+
+              return UserCard(
+                user: lobbyInfo.guests[index - 4],
+              );
+            },
+          ),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 30,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: ElevatedButton(
+              child: const Text('Заново'),
+              onPressed: () {},
+            ),
+          ),
+        ),
       ],
     );
   }

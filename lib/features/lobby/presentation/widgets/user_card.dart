@@ -56,9 +56,16 @@ class UserCard extends StatelessWidget {
           if (user.state == UserState.ready) const Icon(Icons.done),
           if (user.state == UserState.answering) const Icon(Icons.timelapse),
           if (user.state == UserState.answered) const Icon(Icons.done),
-          if (user.state == UserState.rightAnswer) const Icon(Icons.done_all),
+          if (user.state == UserState.rightAnswer)
+            Icon(
+              Icons.done_all,
+              color: theme.colorScheme.primary,
+            ),
           if (user.state == UserState.wrongAnswer)
-            const Icon(Icons.error_outline),
+            Icon(
+              Icons.error_outline,
+              color: theme.colorScheme.error,
+            ),
         ],
       ),
     );
