@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../application/view_models/user_vm/user_vm.dart';
 
+const _iconRightPadding = 5.0;
+
 class UserCard extends StatelessWidget {
   const UserCard({
     super.key,
@@ -12,18 +14,36 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  if (user.role == UserRole.admin) const Icon(Icons.star),
-                  if (user.role == UserRole.leader)
-                    const Icon(Icons.record_voice_over),
-                  Text(user.name),
+                  if (user.isCreator)
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        right: _iconRightPadding,
+                      ),
+                      child: Icon(Icons.star),
+                    ),
+                  if (user.isLeader)
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        right: _iconRightPadding,
+                      ),
+                      child: Icon(Icons.record_voice_over),
+                    ),
+                  Text(
+                    user.name,
+                    style: theme.textTheme.titleLarge,
+                  ),
                 ],
               ),
               Text(user.id),

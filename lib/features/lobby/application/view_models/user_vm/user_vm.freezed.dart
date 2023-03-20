@@ -18,7 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$UserVM {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  UserRole get role => throw _privateConstructorUsedError;
+  bool get isMe => throw _privateConstructorUsedError;
+  bool get isCreator => throw _privateConstructorUsedError;
+  bool get isLeader => throw _privateConstructorUsedError;
   UserState get state => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -30,7 +32,13 @@ abstract class $UserVMCopyWith<$Res> {
   factory $UserVMCopyWith(UserVM value, $Res Function(UserVM) then) =
       _$UserVMCopyWithImpl<$Res, UserVM>;
   @useResult
-  $Res call({String id, String name, UserRole role, UserState state});
+  $Res call(
+      {String id,
+      String name,
+      bool isMe,
+      bool isCreator,
+      bool isLeader,
+      UserState state});
 }
 
 /// @nodoc
@@ -48,7 +56,9 @@ class _$UserVMCopyWithImpl<$Res, $Val extends UserVM>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? role = null,
+    Object? isMe = null,
+    Object? isCreator = null,
+    Object? isLeader = null,
     Object? state = null,
   }) {
     return _then(_value.copyWith(
@@ -60,10 +70,18 @@ class _$UserVMCopyWithImpl<$Res, $Val extends UserVM>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      role: null == role
-          ? _value.role
-          : role // ignore: cast_nullable_to_non_nullable
-              as UserRole,
+      isMe: null == isMe
+          ? _value.isMe
+          : isMe // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCreator: null == isCreator
+          ? _value.isCreator
+          : isCreator // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLeader: null == isLeader
+          ? _value.isLeader
+          : isLeader // ignore: cast_nullable_to_non_nullable
+              as bool,
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -78,7 +96,13 @@ abstract class _$$_UserVMCopyWith<$Res> implements $UserVMCopyWith<$Res> {
       __$$_UserVMCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, UserRole role, UserState state});
+  $Res call(
+      {String id,
+      String name,
+      bool isMe,
+      bool isCreator,
+      bool isLeader,
+      UserState state});
 }
 
 /// @nodoc
@@ -93,7 +117,9 @@ class __$$_UserVMCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? role = null,
+    Object? isMe = null,
+    Object? isCreator = null,
+    Object? isLeader = null,
     Object? state = null,
   }) {
     return _then(_$_UserVM(
@@ -105,10 +131,18 @@ class __$$_UserVMCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      role: null == role
-          ? _value.role
-          : role // ignore: cast_nullable_to_non_nullable
-              as UserRole,
+      isMe: null == isMe
+          ? _value.isMe
+          : isMe // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCreator: null == isCreator
+          ? _value.isCreator
+          : isCreator // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLeader: null == isLeader
+          ? _value.isLeader
+          : isLeader // ignore: cast_nullable_to_non_nullable
+              as bool,
       state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -123,7 +157,9 @@ class _$_UserVM implements _UserVM {
   const _$_UserVM(
       {required this.id,
       required this.name,
-      required this.role,
+      required this.isMe,
+      required this.isCreator,
+      required this.isLeader,
       required this.state});
 
   @override
@@ -131,13 +167,17 @@ class _$_UserVM implements _UserVM {
   @override
   final String name;
   @override
-  final UserRole role;
+  final bool isMe;
+  @override
+  final bool isCreator;
+  @override
+  final bool isLeader;
   @override
   final UserState state;
 
   @override
   String toString() {
-    return 'UserVM(id: $id, name: $name, role: $role, state: $state)';
+    return 'UserVM(id: $id, name: $name, isMe: $isMe, isCreator: $isCreator, isLeader: $isLeader, state: $state)';
   }
 
   @override
@@ -147,12 +187,17 @@ class _$_UserVM implements _UserVM {
             other is _$_UserVM &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role) &&
+            (identical(other.isMe, isMe) || other.isMe == isMe) &&
+            (identical(other.isCreator, isCreator) ||
+                other.isCreator == isCreator) &&
+            (identical(other.isLeader, isLeader) ||
+                other.isLeader == isLeader) &&
             (identical(other.state, state) || other.state == state));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, role, state);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, isMe, isCreator, isLeader, state);
 
   @JsonKey(ignore: true)
   @override
@@ -165,7 +210,9 @@ abstract class _UserVM implements UserVM {
   const factory _UserVM(
       {required final String id,
       required final String name,
-      required final UserRole role,
+      required final bool isMe,
+      required final bool isCreator,
+      required final bool isLeader,
       required final UserState state}) = _$_UserVM;
 
   @override
@@ -173,7 +220,11 @@ abstract class _UserVM implements UserVM {
   @override
   String get name;
   @override
-  UserRole get role;
+  bool get isMe;
+  @override
+  bool get isCreator;
+  @override
+  bool get isLeader;
   @override
   UserState get state;
   @override

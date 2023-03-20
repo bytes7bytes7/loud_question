@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../common/domain/domain.dart';
+import '../user_vm/user_vm.dart';
 
 part 'lobby_info_vm.freezed.dart';
 
@@ -8,8 +8,9 @@ part 'lobby_info_vm.freezed.dart';
 class LobbyInfoVM with _$LobbyInfoVM {
   const factory LobbyInfoVM({
     required String id,
-    required User creator,
+    required UserVM me,
+    required UserVM creator,
     required int createdAtInMSSinceEpoch,
-    required List<User> guests,
+    required List<UserVM> guests,
   }) = _LobbyInfoVM;
 }

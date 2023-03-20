@@ -17,9 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$LobbyInfoVM {
   String get id => throw _privateConstructorUsedError;
-  User get creator => throw _privateConstructorUsedError;
+  UserVM get me => throw _privateConstructorUsedError;
+  UserVM get creator => throw _privateConstructorUsedError;
   int get createdAtInMSSinceEpoch => throw _privateConstructorUsedError;
-  List<User> get guests => throw _privateConstructorUsedError;
+  List<UserVM> get guests => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $LobbyInfoVMCopyWith<LobbyInfoVM> get copyWith =>
@@ -34,11 +35,13 @@ abstract class $LobbyInfoVMCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      User creator,
+      UserVM me,
+      UserVM creator,
       int createdAtInMSSinceEpoch,
-      List<User> guests});
+      List<UserVM> guests});
 
-  $UserCopyWith<$Res> get creator;
+  $UserVMCopyWith<$Res> get me;
+  $UserVMCopyWith<$Res> get creator;
 }
 
 /// @nodoc
@@ -55,6 +58,7 @@ class _$LobbyInfoVMCopyWithImpl<$Res, $Val extends LobbyInfoVM>
   @override
   $Res call({
     Object? id = null,
+    Object? me = null,
     Object? creator = null,
     Object? createdAtInMSSinceEpoch = null,
     Object? guests = null,
@@ -64,10 +68,14 @@ class _$LobbyInfoVMCopyWithImpl<$Res, $Val extends LobbyInfoVM>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      me: null == me
+          ? _value.me
+          : me // ignore: cast_nullable_to_non_nullable
+              as UserVM,
       creator: null == creator
           ? _value.creator
           : creator // ignore: cast_nullable_to_non_nullable
-              as User,
+              as UserVM,
       createdAtInMSSinceEpoch: null == createdAtInMSSinceEpoch
           ? _value.createdAtInMSSinceEpoch
           : createdAtInMSSinceEpoch // ignore: cast_nullable_to_non_nullable
@@ -75,14 +83,22 @@ class _$LobbyInfoVMCopyWithImpl<$Res, $Val extends LobbyInfoVM>
       guests: null == guests
           ? _value.guests
           : guests // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+              as List<UserVM>,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $UserCopyWith<$Res> get creator {
-    return $UserCopyWith<$Res>(_value.creator, (value) {
+  $UserVMCopyWith<$Res> get me {
+    return $UserVMCopyWith<$Res>(_value.me, (value) {
+      return _then(_value.copyWith(me: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserVMCopyWith<$Res> get creator {
+    return $UserVMCopyWith<$Res>(_value.creator, (value) {
       return _then(_value.copyWith(creator: value) as $Val);
     });
   }
@@ -98,12 +114,15 @@ abstract class _$$_LobbyInfoVMCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      User creator,
+      UserVM me,
+      UserVM creator,
       int createdAtInMSSinceEpoch,
-      List<User> guests});
+      List<UserVM> guests});
 
   @override
-  $UserCopyWith<$Res> get creator;
+  $UserVMCopyWith<$Res> get me;
+  @override
+  $UserVMCopyWith<$Res> get creator;
 }
 
 /// @nodoc
@@ -118,6 +137,7 @@ class __$$_LobbyInfoVMCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? me = null,
     Object? creator = null,
     Object? createdAtInMSSinceEpoch = null,
     Object? guests = null,
@@ -127,10 +147,14 @@ class __$$_LobbyInfoVMCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
+      me: null == me
+          ? _value.me
+          : me // ignore: cast_nullable_to_non_nullable
+              as UserVM,
       creator: null == creator
           ? _value.creator
           : creator // ignore: cast_nullable_to_non_nullable
-              as User,
+              as UserVM,
       createdAtInMSSinceEpoch: null == createdAtInMSSinceEpoch
           ? _value.createdAtInMSSinceEpoch
           : createdAtInMSSinceEpoch // ignore: cast_nullable_to_non_nullable
@@ -138,7 +162,7 @@ class __$$_LobbyInfoVMCopyWithImpl<$Res>
       guests: null == guests
           ? _value._guests
           : guests // ignore: cast_nullable_to_non_nullable
-              as List<User>,
+              as List<UserVM>,
     ));
   }
 }
@@ -148,20 +172,23 @@ class __$$_LobbyInfoVMCopyWithImpl<$Res>
 class _$_LobbyInfoVM implements _LobbyInfoVM {
   const _$_LobbyInfoVM(
       {required this.id,
+      required this.me,
       required this.creator,
       required this.createdAtInMSSinceEpoch,
-      required final List<User> guests})
+      required final List<UserVM> guests})
       : _guests = guests;
 
   @override
   final String id;
   @override
-  final User creator;
+  final UserVM me;
+  @override
+  final UserVM creator;
   @override
   final int createdAtInMSSinceEpoch;
-  final List<User> _guests;
+  final List<UserVM> _guests;
   @override
-  List<User> get guests {
+  List<UserVM> get guests {
     if (_guests is EqualUnmodifiableListView) return _guests;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_guests);
@@ -169,7 +196,7 @@ class _$_LobbyInfoVM implements _LobbyInfoVM {
 
   @override
   String toString() {
-    return 'LobbyInfoVM(id: $id, creator: $creator, createdAtInMSSinceEpoch: $createdAtInMSSinceEpoch, guests: $guests)';
+    return 'LobbyInfoVM(id: $id, me: $me, creator: $creator, createdAtInMSSinceEpoch: $createdAtInMSSinceEpoch, guests: $guests)';
   }
 
   @override
@@ -178,6 +205,7 @@ class _$_LobbyInfoVM implements _LobbyInfoVM {
         (other.runtimeType == runtimeType &&
             other is _$_LobbyInfoVM &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.me, me) || other.me == me) &&
             (identical(other.creator, creator) || other.creator == creator) &&
             (identical(
                     other.createdAtInMSSinceEpoch, createdAtInMSSinceEpoch) ||
@@ -186,7 +214,7 @@ class _$_LobbyInfoVM implements _LobbyInfoVM {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, creator,
+  int get hashCode => Object.hash(runtimeType, id, me, creator,
       createdAtInMSSinceEpoch, const DeepCollectionEquality().hash(_guests));
 
   @JsonKey(ignore: true)
@@ -199,18 +227,21 @@ class _$_LobbyInfoVM implements _LobbyInfoVM {
 abstract class _LobbyInfoVM implements LobbyInfoVM {
   const factory _LobbyInfoVM(
       {required final String id,
-      required final User creator,
+      required final UserVM me,
+      required final UserVM creator,
       required final int createdAtInMSSinceEpoch,
-      required final List<User> guests}) = _$_LobbyInfoVM;
+      required final List<UserVM> guests}) = _$_LobbyInfoVM;
 
   @override
   String get id;
   @override
-  User get creator;
+  UserVM get me;
+  @override
+  UserVM get creator;
   @override
   int get createdAtInMSSinceEpoch;
   @override
-  List<User> get guests;
+  List<UserVM> get guests;
   @override
   @JsonKey(ignore: true)
   _$$_LobbyInfoVMCopyWith<_$_LobbyInfoVM> get copyWith =>

@@ -6,6 +6,7 @@ import '../../../common/presentation/widgets/widgets.dart';
 import '../../application/blocs/lobby/lobby_bloc.dart';
 import '../../application/view_models/lobby_info_vm/lobby_info_vm.dart';
 import '../../domain/value_objects/game_state/game_state.dart';
+import '../widgets/widgets.dart';
 
 final _getIt = GetIt.instance;
 
@@ -84,15 +85,70 @@ class _Body extends StatelessWidget {
           );
         }
 
-        if (state.gameState is InitGameState) {
+        if (gameState is InitGameState) {
+          return RefreshIndicator(
+            onRefresh: () async => lobbyBloc.add(const LoadLobbyEvent()),
+            child: ListView.separated(
+              // info bar, empty box, creator card
+              itemCount: lobbyInfo.guests.length + 3,
+              separatorBuilder: (context, index) {
+                if (index == 1) {
+                  // creator bar
+                  return const TitleBar(
+                    text: 'Я',
+                  );
+                }
+
+                if (index == 2) {
+                  // other players bar
+                  return TitleBar(
+                    text: 'Другие игроки (${lobbyInfo.guests.length})',
+                  );
+                }
+
+                return const Divider();
+              },
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  // info bar
+                  return InfoBar(
+                    text: 'Готово: ${gameState.readyIDs.length}/'
+                        '${lobbyInfo.guests.length + 1}',
+                  );
+                }
+
+                if (index == 1) {
+                  // empty box
+                  return const SizedBox.shrink();
+                }
+
+                if (index == 2) {
+                  // me
+                  return UserCard(
+                    user: lobbyInfo.me,
+                  );
+                }
+
+                if (index == 3) {
+                  // creator
+                  return UserCard(
+                    user: lobbyInfo.creator,
+                  );
+                }
+
+                return UserCard(
+                  user: lobbyInfo.guests[index - 4],
+                );
+              },
+            ),
+          );
+        }
+
+        if (gameState is PlayingGameState) {
           return const SizedBox.shrink();
         }
 
-        if (state.gameState is PlayingGameState) {
-          return const SizedBox.shrink();
-        }
-
-        if (state.gameState is WaitingForAnswerGameState) {
+        if (gameState is WaitingForAnswerGameState) {
           return const SizedBox.shrink();
         }
 

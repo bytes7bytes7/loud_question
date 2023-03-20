@@ -28,6 +28,9 @@ class App extends StatelessWidget {
           ),
           backgroundColor: _theme.colorScheme.tertiary,
         ),
+        dividerTheme: _theme.dividerTheme.copyWith(
+          space: 0,
+        ),
       ),
     );
   }
