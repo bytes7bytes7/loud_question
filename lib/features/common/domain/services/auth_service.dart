@@ -166,11 +166,10 @@ class AuthService {
           return;
         }
 
-        final me = await _userService.get(id: myID);
-
-        if (me != null) {
+        try {
+          final me = await _userService.get(id: myID);
           _userController.add(me);
-        } else {
+        } catch (e) {
           _userController.add(null);
         }
       },

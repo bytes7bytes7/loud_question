@@ -3,7 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../common/common.dart';
+import '../../../../common/application/application.dart';
+import '../../../../common/domain/domain.dart';
 import '../../../domain/services/home_service.dart';
 import '../../coordinators/home_coordinator.dart';
 import '../../view_models/lobby_vm/lobby_vm.dart';
@@ -17,9 +18,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required AuthService authService,
     required HomeService homeService,
+    required UserService userService,
     required HomeCoordinator coordinator,
   })  : _authService = authService,
         _homeService = homeService,
+        _userService = userService,
         _coordinator = coordinator,
         super(const HomeState()) {
     on<LogOutHomeEvent>(_logOut, transformer: droppable());
@@ -31,6 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final AuthService _authService;
   final HomeService _homeService;
+  final UserService _userService;
   final HomeCoordinator _coordinator;
 
   Future<void> _logOut(LogOutHomeEvent event, Emitter<HomeState> emit) async {
@@ -48,31 +52,48 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.withLoading());
 
+    late List<Lobby> lobbies;
     try {
-      final lobbies = await _homeService.load();
-
-      emit(
-        state.copyWith(
-          isLoading: false,
-          lobbies: lobbies
-              .map(
-                (e) => LobbyVM(
-                  id: e.id.str,
-                  creatorID: e.creatorID.str,
-                  createdAtInMSSinceEpoch: e.createdAtInMSSinceEpoch,
-                  guestIDs: e.guestIDs.map((e) => e.str).toList(),
-                ),
-              )
-              .toList(),
-        ),
-      );
+      lobbies = await _homeService.load();
     } catch (e) {
       emit(
         state.withError(
           'Ошибка загрузки лобби',
         ),
       );
+
+      return;
     }
+
+    final lobbiesVM = <LobbyVM>[];
+    for (final lobby in lobbies) {
+      late User creator;
+      try {
+        creator = await _userService.get(id: lobby.creatorID);
+      } catch (e) {
+        emit(
+          state.withError('Ошибка загрузки информации о создателе лобби'),
+        );
+
+        return;
+      }
+
+      lobbiesVM.add(
+        LobbyVM(
+          id: lobby.id.str,
+          creatorName: creator.name,
+          createdAtInMSSinceEpoch: lobby.createdAtInMSSinceEpoch,
+          guestIDs: lobby.guestIDs.map((e) => e.str).toList(),
+        ),
+      );
+    }
+
+    emit(
+      state.copyWith(
+        isLoading: false,
+        lobbies: lobbiesVM,
+      ),
+    );
   }
 
   Future<void> _createLobby(

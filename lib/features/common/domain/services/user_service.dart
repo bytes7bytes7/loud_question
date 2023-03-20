@@ -15,7 +15,7 @@ class UserService {
   final UserRepository _userRepository;
   final UserProvider _userProvider;
 
-  Future<User?> get({
+  Future<User> get({
     required UserID id,
     bool cached = true,
   }) async {
@@ -40,7 +40,7 @@ class UserService {
         },
       );
     } catch (e) {
-      return null;
+      rethrow;
     }
   }
 

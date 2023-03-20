@@ -6,7 +6,7 @@ part 'lobby_vm.freezed.dart';
 class LobbyVM with _$LobbyVM {
   const factory LobbyVM({
     required String id,
-    required String creatorID,
+    required String creatorName,
     required int createdAtInMSSinceEpoch,
     required List<String> guestIDs,
   }) = _LobbyVM;

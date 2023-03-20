@@ -18,6 +18,10 @@ class App extends StatelessWidget {
       routerConfig: _getIt.get<GoRouter>(),
       title: 'Load Question',
       theme: _theme.copyWith(
+        appBarTheme: _theme.appBarTheme.copyWith(
+          backgroundColor: _theme.colorScheme.primary,
+          foregroundColor: _theme.colorScheme.onPrimary,
+        ),
         snackBarTheme: _theme.snackBarTheme.copyWith(
           contentTextStyle: _theme.textTheme.bodyMedium?.copyWith(
             color: _theme.colorScheme.onTertiary,

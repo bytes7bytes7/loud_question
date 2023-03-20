@@ -4,10 +4,12 @@ class LobbyCard extends StatelessWidget {
   const LobbyCard({
     super.key,
     required this.lobbyID,
+    required this.creatorName,
     required this.onPressed,
   });
 
   final String lobbyID;
+  final String creatorName;
   final VoidCallback onPressed;
 
   @override
@@ -16,7 +18,10 @@ class LobbyCard extends StatelessWidget {
       onTap: onPressed,
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Text(lobbyID),
+        child: ListTile(
+          title: Text(lobbyID),
+          subtitle: Text(creatorName),
+        ),
       ),
     );
   }

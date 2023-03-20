@@ -116,6 +116,7 @@ class _Body extends StatelessWidget {
 
               return LobbyCard(
                 lobbyID: lobby.id,
+                creatorName: lobby.creatorName,
                 onPressed: () => bloc.add(
                   OpenLobbyHomeEvent(
                     lobbyID: lobby.id,
