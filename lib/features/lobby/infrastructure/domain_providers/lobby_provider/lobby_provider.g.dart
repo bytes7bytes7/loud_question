@@ -34,7 +34,7 @@ class _ProdLobbyProvider implements ProdLobbyProvider {
     )
                 .compose(
                   _dio.options,
-                  '/{id}',
+                  '/${id}',
                   queryParameters: queryParameters,
                   data: _data,
                 )

@@ -16,12 +16,9 @@ class LobbyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListTile(
-          title: Text(lobbyID),
-          subtitle: Text(creatorName),
-        ),
+      child: ListTile(
+        title: Text(lobbyID),
+        subtitle: Text(creatorName),
       ),
     );
   }

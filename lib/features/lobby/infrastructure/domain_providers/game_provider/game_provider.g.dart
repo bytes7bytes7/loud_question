@@ -34,7 +34,7 @@ class _ProdGameProvider implements ProdGameProvider {
     )
                 .compose(
                   _dio.options,
-                  '/{id}/state',
+                  '/${id}/state',
                   queryParameters: queryParameters,
                   data: _data,
                 )

@@ -30,6 +30,6 @@ abstract class ProdGameProvider implements GameProvider {
   @override
   @GET('/{id}/state')
   Future<JsonEitherWrapper<ProblemDetails, GetGameStateResponse>> getState(
-    String id,
+    @Path() String id,
   );
 }

@@ -30,6 +30,6 @@ abstract class ProdLobbyProvider implements LobbyProvider {
   @override
   @GET('/{id}')
   Future<JsonEitherWrapper<ProblemDetails, GetLobbyResponse>> getLobby(
-    String id,
+    @Path() String id,
   );
 }
