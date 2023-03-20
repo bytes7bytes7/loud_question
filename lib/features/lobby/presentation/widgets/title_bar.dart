@@ -14,7 +14,7 @@ class TitleBar extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 10,
+        vertical: 5,
         horizontal: 20,
       ),
       child: Text(

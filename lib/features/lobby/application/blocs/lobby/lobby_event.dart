@@ -8,5 +8,12 @@ abstract class LobbyEvent extends Equatable {
 }
 
 class LoadLobbyEvent extends LobbyEvent {
-  const LoadLobbyEvent();
+  const LoadLobbyEvent({
+    required this.cached,
+  });
+
+  final bool cached;
+
+  @override
+  List<Object?> get props => [cached];
 }

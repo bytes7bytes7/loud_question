@@ -12,20 +12,22 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:go_router/go_router.dart' as _i5;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:loud_question/features/auth/application/application.dart'
-    as _i64;
+    as _i66;
 import 'package:loud_question/features/auth/application/blocs/log_in/log_in_bloc.dart'
-    as _i71;
-import 'package:loud_question/features/auth/application/blocs/register/register_bloc.dart'
     as _i73;
+import 'package:loud_question/features/auth/application/blocs/register/register_bloc.dart'
+    as _i75;
 import 'package:loud_question/features/auth/application/coordinators/log_in_coordinator.dart'
-    as _i72;
-import 'package:loud_question/features/auth/application/coordinators/register_coordinator.dart'
     as _i74;
-import 'package:loud_question/features/auth/auth.dart' as _i66;
-import 'package:loud_question/features/common/common.dart' as _i45;
-import 'package:loud_question/features/common/domain/domain.dart' as _i37;
+import 'package:loud_question/features/auth/application/coordinators/register_coordinator.dart'
+    as _i76;
+import 'package:loud_question/features/auth/auth.dart' as _i68;
+import 'package:loud_question/features/common/common.dart' as _i47;
+import 'package:loud_question/features/common/domain/domain.dart' as _i39;
+import 'package:loud_question/features/common/domain/dto/get_user_response/get_user_response.dart'
+    as _i9;
 import 'package:loud_question/features/common/domain/dto/log_in_response/log_in_response.dart'
-    as _i21;
+    as _i19;
 import 'package:loud_question/features/common/domain/dto/log_out_response/log_out_response.dart'
     as _i27;
 import 'package:loud_question/features/common/domain/dto/register_response/register_response.dart'
@@ -33,29 +35,31 @@ import 'package:loud_question/features/common/domain/dto/register_response/regis
 import 'package:loud_question/features/common/domain/dto/verify_token_response/verify_token_response.dart'
     as _i25;
 import 'package:loud_question/features/common/domain/providers/auth_exception_provider.dart'
-    as _i50;
+    as _i52;
 import 'package:loud_question/features/common/domain/providers/auth_provider.dart'
-    as _i49;
+    as _i51;
 import 'package:loud_question/features/common/domain/providers/server_exception_provider.dart'
-    as _i29;
+    as _i31;
 import 'package:loud_question/features/common/domain/providers/user_provider.dart'
-    as _i42;
+    as _i44;
 import 'package:loud_question/features/common/domain/services/auth_service.dart'
-    as _i48;
+    as _i50;
 import 'package:loud_question/features/common/domain/services/token_service.dart'
-    as _i35;
+    as _i37;
 import 'package:loud_question/features/common/domain/services/user_service.dart'
-    as _i41;
+    as _i43;
 import 'package:loud_question/features/common/infrastructure/domain_providers/auth_exception_provider.dart'
-    as _i46;
+    as _i48;
 import 'package:loud_question/features/common/infrastructure/domain_providers/auth_provider/auth_provider.dart'
-    as _i47;
+    as _i49;
 import 'package:loud_question/features/common/infrastructure/domain_providers/server_exception_provider/server_exception_provider.dart'
-    as _i30;
+    as _i32;
 import 'package:loud_question/features/common/infrastructure/domain_providers/user_provider/user_provider.dart'
-    as _i38;
-import 'package:loud_question/features/common/infrastructure/json_converters/log_in_response_json_coverter.dart'
-    as _i22;
+    as _i40;
+import 'package:loud_question/features/common/infrastructure/json_converters/get_user_response_json_converter.dart'
+    as _i10;
+import 'package:loud_question/features/common/infrastructure/json_converters/log_in_response_json_converter.dart'
+    as _i20;
 import 'package:loud_question/features/common/infrastructure/json_converters/log_out_response_json_converter.dart'
     as _i28;
 import 'package:loud_question/features/common/infrastructure/json_converters/register_response_json_converter.dart'
@@ -65,85 +69,85 @@ import 'package:loud_question/features/common/infrastructure/json_converters/ver
 import 'package:loud_question/features/home/application/application.dart'
     as _i6;
 import 'package:loud_question/features/home/application/blocs/home/home_bloc.dart'
-    as _i68;
-import 'package:loud_question/features/home/application/coordinators/home_coordinator.dart'
-    as _i69;
-import 'package:loud_question/features/home/domain/dto/create_lobby_response/create_lobby_response.dart'
-    as _i17;
-import 'package:loud_question/features/home/domain/dto/get_lobbies_response/get_lobbies_response.dart'
-    as _i13;
-import 'package:loud_question/features/home/domain/dto/join_lobby_response/join_lobby_response.dart'
-    as _i9;
-import 'package:loud_question/features/home/domain/providers/home_provider.dart'
-    as _i57;
-import 'package:loud_question/features/home/domain/services/home_service.dart'
-    as _i59;
-import 'package:loud_question/features/home/infrastructure/domain_providers/home_provider/home_provider.dart'
-    as _i58;
-import 'package:loud_question/features/home/infrastructure/json_converters/create_lobby_response_json_converter.dart'
-    as _i18;
-import 'package:loud_question/features/home/infrastructure/json_converters/get_lobbies_response_json_converter.dart'
-    as _i14;
-import 'package:loud_question/features/home/infrastructure/json_converters/join_lobby_response_json_converter.dart'
-    as _i10;
-import 'package:loud_question/features/lobby/application/blocs/lobby/lobby_bloc.dart'
     as _i70;
-import 'package:loud_question/features/lobby/domain/domain.dart' as _i51;
+import 'package:loud_question/features/home/application/coordinators/home_coordinator.dart'
+    as _i71;
+import 'package:loud_question/features/home/domain/dto/create_lobby_response/create_lobby_response.dart'
+    as _i21;
+import 'package:loud_question/features/home/domain/dto/get_lobbies_response/get_lobbies_response.dart'
+    as _i29;
+import 'package:loud_question/features/home/domain/dto/join_lobby_response/join_lobby_response.dart'
+    as _i17;
+import 'package:loud_question/features/home/domain/providers/home_provider.dart'
+    as _i59;
+import 'package:loud_question/features/home/domain/services/home_service.dart'
+    as _i61;
+import 'package:loud_question/features/home/infrastructure/domain_providers/home_provider/home_provider.dart'
+    as _i60;
+import 'package:loud_question/features/home/infrastructure/json_converters/create_lobby_response_json_converter.dart'
+    as _i22;
+import 'package:loud_question/features/home/infrastructure/json_converters/get_lobbies_response_json_converter.dart'
+    as _i30;
+import 'package:loud_question/features/home/infrastructure/json_converters/join_lobby_response_json_converter.dart'
+    as _i18;
+import 'package:loud_question/features/lobby/application/blocs/lobby/lobby_bloc.dart'
+    as _i72;
+import 'package:loud_question/features/lobby/domain/domain.dart' as _i53;
 import 'package:loud_question/features/lobby/domain/dto/get_game_state_response/get_game_state_response.dart'
-    as _i19;
+    as _i11;
 import 'package:loud_question/features/lobby/domain/dto/get_lobby_response/get_lobby_response.dart'
     as _i15;
 import 'package:loud_question/features/lobby/domain/providers/game_provider.dart'
-    as _i56;
+    as _i58;
 import 'package:loud_question/features/lobby/domain/providers/lobby_provider.dart'
-    as _i63;
+    as _i65;
 import 'package:loud_question/features/lobby/domain/services/game_service.dart'
-    as _i55;
+    as _i57;
 import 'package:loud_question/features/lobby/domain/services/lobby_service.dart'
-    as _i62;
+    as _i64;
 import 'package:loud_question/features/lobby/infrastructure/domain_providers/game_provider/game_provider.dart'
-    as _i52;
+    as _i54;
 import 'package:loud_question/features/lobby/infrastructure/domain_providers/lobby_provider/lobby_provider.dart'
-    as _i60;
+    as _i62;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/get_game_state_response_json_converter.dart'
-    as _i20;
+    as _i12;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/get_lobby_response_json_converter.dart'
     as _i16;
 import 'package:loud_question/main/infrastructure/coordinators/home_coordinator.dart'
     as _i7;
 import 'package:loud_question/main/infrastructure/coordinators/log_in_coordinator.dart'
-    as _i65;
-import 'package:loud_question/main/infrastructure/coordinators/register_coordinator.dart'
     as _i67;
+import 'package:loud_question/main/infrastructure/coordinators/register_coordinator.dart'
+    as _i69;
 import 'package:loud_question/main/infrastructure/json_converters/problem_detials_json_converter.dart'
-    as _i12;
+    as _i14;
 import 'package:loud_question/repositories/implementations/account_repository.dart'
-    as _i44;
+    as _i46;
 import 'package:loud_question/repositories/implementations/game_repository.dart'
-    as _i54;
+    as _i56;
 import 'package:loud_question/repositories/implementations/lobby_repository.dart'
-    as _i61;
+    as _i63;
 import 'package:loud_question/repositories/implementations/token_repository.dart'
-    as _i34;
+    as _i36;
 import 'package:loud_question/repositories/implementations/user_repository.dart'
-    as _i40;
+    as _i42;
 import 'package:loud_question/repositories/interfaces/account_repository.dart'
-    as _i43;
+    as _i45;
 import 'package:loud_question/repositories/interfaces/game_repository.dart'
-    as _i53;
-import 'package:loud_question/repositories/interfaces/interfaces.dart' as _i36;
+    as _i55;
+import 'package:loud_question/repositories/interfaces/interfaces.dart' as _i38;
 import 'package:loud_question/repositories/interfaces/token_repository.dart'
-    as _i33;
+    as _i35;
 import 'package:loud_question/repositories/interfaces/user_repository.dart'
-    as _i39;
-import 'package:loud_question/utils/server_settings.dart' as _i31;
-import 'package:problem_details/problem_details.dart' as _i11;
-import 'package:shared_preferences/shared_preferences.dart' as _i32;
+    as _i41;
+import 'package:loud_question/utils/server_settings.dart' as _i33;
+import 'package:problem_details/problem_details.dart' as _i13;
+import 'package:shared_preferences/shared_preferences.dart' as _i34;
 
-import '../../../env/env_module.dart' as _i75;
-import '../router/router.dart' as _i76;
-import '../third_party/dio_module.dart' as _i77;
-import '../third_party/shared_preferences_module.dart' as _i78;
+import '../../../env/env_module.dart' as _i77;
+import '../router/router.dart' as _i78;
+import '../third_party/dio_module.dart' as _i79;
+import '../third_party/shared_preferences_module.dart' as _i80;
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -168,23 +172,22 @@ Future<_i1.GetIt> init(
       routerModule.router(gh<_i4.GlobalKey<_i4.NavigatorState>>()));
   gh.singleton<_i6.HomeCoordinator>(
       _i7.ProdHomeCoordinator(goRouter: gh<_i5.GoRouter>()));
-  gh.singleton<_i8.JsonConverter<_i9.JoinLobbyResponse, Map<String, Object?>>>(
-      _i10.JoinLobbyResponseJsonConverter());
-  gh.singleton<_i8.JsonConverter<_i11.ProblemDetails, Map<String, Object?>>>(
-      _i12.ProblemDetailsJsonConverter());
+  gh.singleton<_i8.JsonConverter<_i9.GetUserResponse, Map<String, Object?>>>(
+      _i10.GetUserResponseJsonConverter());
   gh.singleton<
-          _i8.JsonConverter<_i13.GetLobbiesResponse, Map<String, Object?>>>(
-      _i14.GetLobbiesResponseJsonConverter());
+          _i8.JsonConverter<_i11.GetGameStateResponse, Map<String, Object?>>>(
+      _i12.GetGameStateResponseJsonConverter());
+  gh.singleton<_i8.JsonConverter<_i13.ProblemDetails, Map<String, Object?>>>(
+      _i14.ProblemDetailsJsonConverter());
   gh.singleton<_i8.JsonConverter<_i15.GetLobbyResponse, Map<String, Object?>>>(
       _i16.GetLobbyResponseJsonConverter());
+  gh.singleton<_i8.JsonConverter<_i17.JoinLobbyResponse, Map<String, Object?>>>(
+      _i18.JoinLobbyResponseJsonConverter());
+  gh.singleton<_i8.JsonConverter<_i19.LogInResponse, Map<String, Object?>>>(
+      _i20.LogInResponseJsonConverter());
   gh.singleton<
-          _i8.JsonConverter<_i17.CreateLobbyResponse, Map<String, Object?>>>(
-      _i18.CreateLobbyResponseJsonConverter());
-  gh.singleton<
-          _i8.JsonConverter<_i19.GetGameStateResponse, Map<String, Object?>>>(
-      _i20.GetGameStateResponseJsonConverter());
-  gh.singleton<_i8.JsonConverter<_i21.LogInResponse, Map<String, Object?>>>(
-      _i22.LogInResponseJsonConverter());
+          _i8.JsonConverter<_i21.CreateLobbyResponse, Map<String, Object?>>>(
+      _i22.CreateLobbyResponseJsonConverter());
   gh.singleton<_i8.JsonConverter<_i23.RegisterResponse, Map<String, Object?>>>(
       _i24.RegisterResponseJsonConverter());
   gh.singleton<
@@ -192,126 +195,129 @@ Future<_i1.GetIt> init(
       _i26.VerifyTokenResponseJsonConverter());
   gh.singleton<_i8.JsonConverter<_i27.LogOutResponse, Map<String, Object?>>>(
       _i28.LogOutResponseJsonConverter());
-  await gh.singletonAsync<_i29.ServerExceptionProvider>(
-    () => _i30.ProdServerExceptionProvider.create(),
+  gh.singleton<
+          _i8.JsonConverter<_i29.GetLobbiesResponse, Map<String, Object?>>>(
+      _i30.GetLobbiesResponseJsonConverter());
+  await gh.singletonAsync<_i31.ServerExceptionProvider>(
+    () => _i32.ProdServerExceptionProvider.create(),
     preResolve: true,
   );
-  gh.singleton<_i31.ServerSettings>(envModule.serverSettings);
-  await gh.factoryAsync<_i32.SharedPreferences>(
+  gh.singleton<_i33.ServerSettings>(envModule.serverSettings);
+  await gh.factoryAsync<_i34.SharedPreferences>(
     () => sharedPreferencesModule.prefs,
     preResolve: true,
   );
-  gh.singleton<_i33.TokenRepository>(
-      _i34.ProdTokenRepository(prefs: gh<_i32.SharedPreferences>()));
-  await gh.singletonAsync<_i35.TokenService>(
+  gh.singleton<_i35.TokenRepository>(
+      _i36.ProdTokenRepository(prefs: gh<_i34.SharedPreferences>()));
+  await gh.singletonAsync<_i37.TokenService>(
     () {
-      final i = _i35.TokenService(
+      final i = _i37.TokenService(
         dio: gh<_i3.Dio>(),
-        tokenRepository: gh<_i36.TokenRepository>(),
+        tokenRepository: gh<_i38.TokenRepository>(),
       );
       return i.init().then((_) => i);
     },
     preResolve: true,
   );
-  gh.singleton<_i37.UserProvider>(_i38.ProdUserProvider(
+  gh.singleton<_i39.UserProvider>(_i40.ProdUserProvider(
     gh<_i3.Dio>(),
-    gh<_i31.ServerSettings>(),
+    gh<_i33.ServerSettings>(),
   ));
-  gh.singleton<_i39.UserRepository>(
-      _i40.ProdUserRepository(prefs: gh<_i32.SharedPreferences>()));
-  gh.singleton<_i41.UserService>(_i41.UserService(
-    userRepository: gh<_i36.UserRepository>(),
-    userProvider: gh<_i42.UserProvider>(),
+  gh.singleton<_i41.UserRepository>(
+      _i42.ProdUserRepository(prefs: gh<_i34.SharedPreferences>()));
+  gh.singleton<_i43.UserService>(_i43.UserService(
+    userRepository: gh<_i38.UserRepository>(),
+    userProvider: gh<_i44.UserProvider>(),
   ));
-  gh.singleton<_i43.AccountRepository>(
-      _i44.ProdAccountRepository(prefs: gh<_i32.SharedPreferences>()));
-  gh.singleton<_i45.AuthExceptionProvider>(
-      _i46.ProdAuthExceptionProvider(gh<_i45.ServerExceptionProvider>()));
-  gh.singleton<_i37.AuthProvider>(_i47.ProdAuthProvider(
+  gh.singleton<_i45.AccountRepository>(
+      _i46.ProdAccountRepository(prefs: gh<_i34.SharedPreferences>()));
+  gh.singleton<_i47.AuthExceptionProvider>(
+      _i48.ProdAuthExceptionProvider(gh<_i47.ServerExceptionProvider>()));
+  gh.singleton<_i39.AuthProvider>(_i49.ProdAuthProvider(
     gh<_i3.Dio>(),
-    gh<_i31.ServerSettings>(),
+    gh<_i33.ServerSettings>(),
   ));
-  await gh.singletonAsync<_i48.AuthService>(
+  await gh.singletonAsync<_i50.AuthService>(
     () {
-      final i = _i48.AuthService(
-        authProvider: gh<_i49.AuthProvider>(),
-        authExceptionProvider: gh<_i50.AuthExceptionProvider>(),
-        accountRepository: gh<_i43.AccountRepository>(),
-        tokenService: gh<_i35.TokenService>(),
-        userService: gh<_i41.UserService>(),
+      final i = _i50.AuthService(
+        authProvider: gh<_i51.AuthProvider>(),
+        authExceptionProvider: gh<_i52.AuthExceptionProvider>(),
+        accountRepository: gh<_i45.AccountRepository>(),
+        tokenService: gh<_i37.TokenService>(),
+        userService: gh<_i43.UserService>(),
       );
       return i.init().then((_) => i);
     },
     preResolve: true,
     dispose: (i) => i.dispose(),
   );
-  gh.singleton<_i51.GameProvider>(_i52.ProdGameProvider(
+  gh.singleton<_i53.GameProvider>(_i54.ProdGameProvider(
     gh<_i3.Dio>(),
-    gh<_i31.ServerSettings>(),
+    gh<_i33.ServerSettings>(),
   ));
-  gh.singleton<_i53.GameRepository>(
-      _i54.ProdGameRepository(prefs: gh<_i32.SharedPreferences>()));
-  gh.singleton<_i55.GameService>(_i55.GameService(
-    gameRepository: gh<_i53.GameRepository>(),
-    gameProvider: gh<_i56.GameProvider>(),
+  gh.singleton<_i55.GameRepository>(
+      _i56.ProdGameRepository(prefs: gh<_i34.SharedPreferences>()));
+  gh.singleton<_i57.GameService>(_i57.GameService(
+    gameRepository: gh<_i55.GameRepository>(),
+    gameProvider: gh<_i58.GameProvider>(),
   ));
-  gh.singleton<_i57.HomeProvider>(_i58.ProdHomeProvider(
+  gh.singleton<_i59.HomeProvider>(_i60.ProdHomeProvider(
     gh<_i3.Dio>(),
-    gh<_i31.ServerSettings>(),
+    gh<_i33.ServerSettings>(),
   ));
-  gh.singleton<_i59.HomeService>(
-      _i59.HomeService(homeProvider: gh<_i57.HomeProvider>()));
-  gh.singleton<_i51.LobbyProvider>(_i60.ProdLobbyProvider(
+  gh.singleton<_i61.HomeService>(
+      _i61.HomeService(homeProvider: gh<_i59.HomeProvider>()));
+  gh.singleton<_i53.LobbyProvider>(_i62.ProdLobbyProvider(
     gh<_i3.Dio>(),
-    gh<_i31.ServerSettings>(),
+    gh<_i33.ServerSettings>(),
   ));
-  gh.singleton<_i36.LobbyRepository>(
-      _i61.ProdLobbyRepository(prefs: gh<_i32.SharedPreferences>()));
-  gh.singleton<_i62.LobbyService>(_i62.LobbyService(
-    lobbyRepository: gh<_i36.LobbyRepository>(),
-    lobbyProvider: gh<_i63.LobbyProvider>(),
+  gh.singleton<_i38.LobbyRepository>(
+      _i63.ProdLobbyRepository(prefs: gh<_i34.SharedPreferences>()));
+  gh.singleton<_i64.LobbyService>(_i64.LobbyService(
+    lobbyRepository: gh<_i38.LobbyRepository>(),
+    lobbyProvider: gh<_i65.LobbyProvider>(),
   ));
-  gh.singleton<_i64.LogInCoordinator>(
-    _i65.ProdLogInCoordinator(
+  gh.singleton<_i66.LogInCoordinator>(
+    _i67.ProdLogInCoordinator(
       goRouter: gh<_i5.GoRouter>(),
-      authService: gh<_i48.AuthService>(),
+      authService: gh<_i50.AuthService>(),
     )..init(),
     dispose: (i) => i.dispose(),
   );
-  gh.singleton<_i66.RegisterCoordinator>(
-    _i67.ProdRegisterCoordinator(
+  gh.singleton<_i68.RegisterCoordinator>(
+    _i69.ProdRegisterCoordinator(
       goRouter: gh<_i5.GoRouter>(),
-      authService: gh<_i48.AuthService>(),
+      authService: gh<_i50.AuthService>(),
     )..init(),
     dispose: (i) => i.dispose(),
   );
-  gh.factory<_i68.HomeBloc>(() => _i68.HomeBloc(
-        authService: gh<_i37.AuthService>(),
-        homeService: gh<_i59.HomeService>(),
-        userService: gh<_i37.UserService>(),
-        coordinator: gh<_i69.HomeCoordinator>(),
+  gh.factory<_i70.HomeBloc>(() => _i70.HomeBloc(
+        authService: gh<_i39.AuthService>(),
+        homeService: gh<_i61.HomeService>(),
+        userService: gh<_i39.UserService>(),
+        coordinator: gh<_i71.HomeCoordinator>(),
       ));
-  gh.factory<_i70.LobbyBloc>(() => _i70.LobbyBloc(
-        lobbyService: gh<_i62.LobbyService>(),
-        userService: gh<_i37.UserService>(),
-        gameService: gh<_i55.GameService>(),
-        accountRepository: gh<_i43.AccountRepository>(),
+  gh.factory<_i72.LobbyBloc>(() => _i72.LobbyBloc(
+        lobbyService: gh<_i64.LobbyService>(),
+        userService: gh<_i39.UserService>(),
+        gameService: gh<_i57.GameService>(),
+        accountRepository: gh<_i45.AccountRepository>(),
       ));
-  gh.factory<_i71.LogInBloc>(() => _i71.LogInBloc(
-        logInCoordinator: gh<_i72.LogInCoordinator>(),
-        authService: gh<_i48.AuthService>(),
+  gh.factory<_i73.LogInBloc>(() => _i73.LogInBloc(
+        logInCoordinator: gh<_i74.LogInCoordinator>(),
+        authService: gh<_i50.AuthService>(),
       ));
-  gh.factory<_i73.RegisterBloc>(() => _i73.RegisterBloc(
-        registerCoordinator: gh<_i74.RegisterCoordinator>(),
-        authService: gh<_i45.AuthService>(),
+  gh.factory<_i75.RegisterBloc>(() => _i75.RegisterBloc(
+        registerCoordinator: gh<_i76.RegisterCoordinator>(),
+        authService: gh<_i47.AuthService>(),
       ));
   return getIt;
 }
 
-class _$EnvModule extends _i75.EnvModule {}
+class _$EnvModule extends _i77.EnvModule {}
 
-class _$RouterModule extends _i76.RouterModule {}
+class _$RouterModule extends _i78.RouterModule {}
 
-class _$DioModule extends _i77.DioModule {}
+class _$DioModule extends _i79.DioModule {}
 
-class _$SharedPreferencesModule extends _i78.SharedPreferencesModule {}
+class _$SharedPreferencesModule extends _i80.SharedPreferencesModule {}

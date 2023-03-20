@@ -49,7 +49,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
     late Lobby lobby;
     try {
-      lobby = await _lobbyService.get(lobbyID: _lobbyID);
+      lobby = await _lobbyService.get(lobbyID: _lobbyID, cached: event.cached);
     } catch (e) {
       emit(
         state.withError('Ошибка загрузки лобби'),
@@ -60,7 +60,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
     late GameState gameState;
     try {
-      gameState = await _gameService.get(id: lobby.id);
+      gameState = await _gameService.get(id: lobby.id, cached: event.cached);
     } catch (e) {
       emit(
         state.withError('не удалось загрузить информацию о состоянии игры'),
@@ -71,7 +71,8 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
     late User creator;
     try {
-      creator = await _userService.get(id: lobby.creatorID);
+      creator =
+          await _userService.get(id: lobby.creatorID, cached: event.cached);
     } catch (e) {
       emit(
         state.withError('не удалось загрузить информацию о создателе лобби'),
@@ -100,7 +101,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     final guests = <User>[];
     for (final guestID in lobby.guestIDs) {
       try {
-        final user = await _userService.get(id: guestID);
+        final user = await _userService.get(id: guestID, cached: event.cached);
         guests.add(user);
       } catch (e) {
         emit(
