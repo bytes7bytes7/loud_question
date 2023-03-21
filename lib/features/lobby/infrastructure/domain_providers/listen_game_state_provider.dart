@@ -9,7 +9,7 @@ import '../../domain/dto/game_state_response/game_state_response.dart';
 import '../../domain/providers/game_provider.dart';
 import '../../domain/providers/listen_game_state_provider.dart';
 
-@Singleton(as: ListenGameStateProvider)
+@Injectable(as: ListenGameStateProvider)
 class ProdListenGameStateProvider implements ListenGameStateProvider {
   ProdListenGameStateProvider({
     required GameProvider gameProvider,
@@ -19,7 +19,7 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
   final GameProvider _gameProvider;
 
   var _working = false;
-  final _controller = StreamController<GameStateResponse>();
+  final _controller = StreamController<GameStateResponse>.broadcast();
 
   @override
   void setLobbyID(LobbyID id) {
@@ -33,7 +33,6 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
   }
 
   @override
-  @disposeMethod
   void stop() {
     _working = false;
     _controller.close();
@@ -55,7 +54,9 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
       if (id == _lobbyID.str && _working && response != null) {
         final result = response.value.getRight().toNullable();
         if (result != null) {
-          _controller.add(result);
+          if (!_controller.isClosed) {
+            _controller.add(result);
+          }
         }
       }
     }

@@ -119,6 +119,7 @@ class _Body extends StatelessWidget {
           return _PlayingStateWidget(
             bloc: bloc,
             gameState: gameState,
+            secondsLeft: state.secondsLeft,
           );
         }
 
@@ -327,18 +328,19 @@ class _PlayingStateWidget extends StatelessWidget {
   const _PlayingStateWidget({
     required this.bloc,
     required this.gameState,
+    required this.secondsLeft,
   });
 
   final LobbyBloc bloc;
   final PlayingGameState gameState;
+  final int? secondsLeft;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
 
-    // TODO: create timer
-    const timeEnds = true;
+    final timeEnds = secondsLeft == 0;
 
     return RefreshIndicator(
       onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
@@ -355,7 +357,7 @@ class _PlayingStateWidget extends StatelessWidget {
                     style: theme.textTheme.headlineMedium,
                   ),
                   Text(
-                    '37',
+                    secondsLeft == null ? '-' : secondsLeft.toString(),
                     style: theme.textTheme.displayLarge,
                   ),
                   if (gameState.question != null) ...[

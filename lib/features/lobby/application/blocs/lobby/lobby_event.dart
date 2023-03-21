@@ -63,3 +63,14 @@ class _ProcessGameStateLobbyEvent extends LobbyEvent {
   @override
   List<Object?> get props => [gameState];
 }
+
+class _UpdateTimeLobbyEvent extends LobbyEvent {
+  const _UpdateTimeLobbyEvent({
+    required this.secondsLeft,
+  });
+
+  final int? secondsLeft;
+
+  @override
+  List<Object?> get props => [secondsLeft];
+}

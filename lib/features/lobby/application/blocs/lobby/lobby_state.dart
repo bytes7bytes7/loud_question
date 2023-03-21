@@ -6,6 +6,7 @@ class LobbyState extends Equatable with Loadable, Errorable {
     this.error = '',
     this.lobbyInfo,
     this.gameState,
+    this.secondsLeft,
   });
 
   @override
@@ -17,6 +18,8 @@ class LobbyState extends Equatable with Loadable, Errorable {
   final LobbyInfoVM? lobbyInfo;
 
   final GameState? gameState;
+
+  final int? secondsLeft;
 
   LobbyState withLoading() => copyWith(isLoading: true);
 
@@ -30,12 +33,14 @@ class LobbyState extends Equatable with Loadable, Errorable {
     String? error = '',
     LobbyInfoVM? lobbyInfo,
     GameState? gameState,
+    Wrapper<int>? secondsLeft,
   }) {
     return LobbyState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       lobbyInfo: lobbyInfo ?? this.lobbyInfo,
       gameState: gameState ?? this.gameState,
+      secondsLeft: secondsLeft != null ? secondsLeft.value : this.secondsLeft,
     );
   }
 
@@ -45,5 +50,6 @@ class LobbyState extends Equatable with Loadable, Errorable {
         error,
         lobbyInfo,
         gameState,
+        secondsLeft,
       ];
 }

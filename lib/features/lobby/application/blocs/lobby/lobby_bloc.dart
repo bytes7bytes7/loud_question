@@ -7,9 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../repositories/interfaces/account_repository.dart';
+import '../../../../../utils/wrapper.dart';
 import '../../../../common/application/application.dart';
 import '../../../../common/domain/domain.dart';
 import '../../../domain/domain.dart';
+import '../../providers/date_time_provider.dart';
 import '../../view_models/view_models.dart';
 
 part 'lobby_event.dart';
@@ -23,11 +25,13 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     required UserService userService,
     required GameService gameService,
     required AccountRepository accountRepository,
+    required DateTimeProvider dateTimeProvider,
     required ListenGameStateProvider listenGameStateProvider,
   })  : _lobbyService = lobbyService,
         _userService = userService,
         _gameService = gameService,
         _accountRepository = accountRepository,
+        _dateTimeProvider = dateTimeProvider,
         _listenGameStateProvider = listenGameStateProvider,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
@@ -42,6 +46,10 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
       _processGameState,
       transformer: restartable(),
     );
+    on<_UpdateTimeLobbyEvent>(
+      _updateTime,
+      transformer: restartable(),
+    );
   }
 
   late LobbyID _lobbyID;
@@ -49,10 +57,13 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   final GameService _gameService;
   final UserService _userService;
   final AccountRepository _accountRepository;
+  final DateTimeProvider _dateTimeProvider;
   final ListenGameStateProvider _listenGameStateProvider;
   StreamSubscription<GameStateResponse>? _stateSub;
+  Timer? _timer;
 
   void dispose() {
+    _timer?.cancel();
     _stateSub?.cancel();
     _listenGameStateProvider.stop();
   }
@@ -163,11 +174,40 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
       guests: guestsVM,
     );
 
+    _timer?.cancel();
+
+    int? secondsLeft;
+    if (gameState is PlayingGameState) {
+      final startedAt =
+          DateTime.fromMillisecondsSinceEpoch(gameState.startedAtMSSinceEpoch);
+      final endsAt =
+          startedAt.add(Duration(seconds: gameState.endsAfterSeconds));
+      final now = _dateTimeProvider.now();
+      final secLeft = endsAt.difference(now).inSeconds;
+
+      if (secLeft <= 0) {
+        secondsLeft = 0;
+      }
+
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        final now = _dateTimeProvider.now();
+
+        final secondsLeft = endsAt.difference(now).inSeconds;
+
+        if (secondsLeft < 0) {
+          timer.cancel();
+        } else {
+          add(_UpdateTimeLobbyEvent(secondsLeft: secondsLeft));
+        }
+      });
+    }
+
     emit(
       state.copyWith(
         lobbyInfo: lobbyInfo,
         gameState: gameState,
         isLoading: false,
+        secondsLeft: Wrapper(secondsLeft),
       ),
     );
   }
@@ -295,10 +335,45 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     _ProcessGameStateLobbyEvent event,
     Emitter<LobbyState> emit,
   ) async {
+    final gameState = event.gameState;
+
+    _timer?.cancel();
+
+    if (gameState is PlayingGameState) {
+      final startedAt =
+          DateTime.fromMillisecondsSinceEpoch(gameState.startedAtMSSinceEpoch);
+      final endsAt =
+          startedAt.add(Duration(seconds: gameState.endsAfterSeconds));
+
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        final now = _dateTimeProvider.now();
+        final secondsLeft = endsAt.difference(now).inSeconds;
+
+        if (secondsLeft < 0) {
+          timer.cancel();
+        } else {
+          add(_UpdateTimeLobbyEvent(secondsLeft: secondsLeft));
+        }
+      });
+    }
+
     emit(
       state.copyWith(
         isLoading: false,
         gameState: event.gameState,
+        secondsLeft: gameState is InitGameState ? const Wrapper(null) : null,
+      ),
+    );
+  }
+
+  Future<void> _updateTime(
+    _UpdateTimeLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        secondsLeft: Wrapper(event.secondsLeft),
       ),
     );
   }
