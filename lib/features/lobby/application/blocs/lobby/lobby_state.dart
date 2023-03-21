@@ -21,6 +21,95 @@ class LobbyState extends Equatable with Loadable, Errorable {
 
   final int? secondsLeft;
 
+  bool get showSetReadyBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! InitGameState || lobby == null) {
+      return false;
+    }
+
+    return !state.readyIDs.contains(UserID.fromString(lobby.me.id));
+  }
+
+  bool get showSetNotReadyBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! InitGameState || lobby == null) {
+      return false;
+    }
+
+    return state.readyIDs.contains(UserID.fromString(lobby.me.id));
+  }
+
+  bool get showStartGameBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! InitGameState || lobby == null) {
+      return false;
+    }
+
+    if (lobby.me.id != state.leaderID.str) {
+      return false;
+    }
+
+    return state.readyIDs.length == lobby.guests.length + 1;
+  }
+
+  bool get showMoveToAnsweringBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! PlayingGameState || lobby == null) {
+      return false;
+    }
+
+    if (lobby.me.id != state.leaderID.str) {
+      return false;
+    }
+
+    return secondsLeft == 0;
+  }
+
+  bool get showAnswerTextField {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! WaitingForAnswerGameState || lobby == null) {
+      return false;
+    }
+
+    return !state.hasAnswered.contains(UserID.fromString(lobby.me.id));
+  }
+
+  bool get showRevealRightAnswerBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! WaitingForAnswerGameState || lobby == null) {
+      return false;
+    }
+
+    if (lobby.me.id != state.leaderID.str) {
+      return false;
+    }
+
+    return state.hasAnswered.length == lobby.guests.length + 1;
+  }
+
+  bool get showPlayAgainBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! CheckingAnswerGameState || lobby == null) {
+      return false;
+    }
+
+    return lobby.me.id != state.leaderID.str;
+  }
+
   LobbyState withLoading() => copyWith(isLoading: true);
 
   LobbyState withError(String error) =>

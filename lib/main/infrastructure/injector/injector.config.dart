@@ -75,7 +75,7 @@ import 'package:loud_question/features/home/application/coordinators/home_coordi
 import 'package:loud_question/features/home/domain/dto/create_lobby_response/create_lobby_response.dart'
     as _i15;
 import 'package:loud_question/features/home/domain/dto/get_lobbies_response/get_lobbies_response.dart'
-    as _i31;
+    as _i17;
 import 'package:loud_question/features/home/domain/dto/join_lobby_response/join_lobby_response.dart'
     as _i19;
 import 'package:loud_question/features/home/domain/providers/home_provider.dart'
@@ -87,7 +87,7 @@ import 'package:loud_question/features/home/infrastructure/domain_providers/home
 import 'package:loud_question/features/home/infrastructure/json_converters/create_lobby_response_json_converter.dart'
     as _i16;
 import 'package:loud_question/features/home/infrastructure/json_converters/get_lobbies_response_json_converter.dart'
-    as _i32;
+    as _i18;
 import 'package:loud_question/features/home/infrastructure/json_converters/join_lobby_response_json_converter.dart'
     as _i20;
 import 'package:loud_question/features/lobby/application/application.dart'
@@ -98,11 +98,11 @@ import 'package:loud_question/features/lobby/application/providers/date_time_pro
     as _i79;
 import 'package:loud_question/features/lobby/domain/domain.dart' as _i57;
 import 'package:loud_question/features/lobby/domain/dto/game_state_response/game_state_response.dart'
-    as _i17;
+    as _i33;
 import 'package:loud_question/features/lobby/domain/dto/get_lobby_response/get_lobby_response.dart'
-    as _i21;
-import 'package:loud_question/features/lobby/domain/dto/set_leader_request/set_leader_request.dart'
     as _i25;
+import 'package:loud_question/features/lobby/domain/dto/set_leader_request/set_leader_request.dart'
+    as _i31;
 import 'package:loud_question/features/lobby/domain/providers/game_provider.dart'
     as _i62;
 import 'package:loud_question/features/lobby/domain/providers/listen_game_state_provider.dart'
@@ -122,11 +122,11 @@ import 'package:loud_question/features/lobby/infrastructure/domain_providers/lis
 import 'package:loud_question/features/lobby/infrastructure/domain_providers/lobby_provider/lobby_provider.dart'
     as _i68;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/game_state_response_json_converter.dart'
-    as _i18;
+    as _i34;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/get_lobby_response_json_converter.dart'
-    as _i22;
-import 'package:loud_question/features/lobby/infrastructure/json_converters/set_leader_request_json_converter.dart'
     as _i26;
+import 'package:loud_question/features/lobby/infrastructure/json_converters/set_leader_request_json_converter.dart'
+    as _i32;
 import 'package:loud_question/main/infrastructure/coordinators/home_coordinator.dart'
     as _i9;
 import 'package:loud_question/main/infrastructure/coordinators/log_in_coordinator.dart'
@@ -134,7 +134,7 @@ import 'package:loud_question/main/infrastructure/coordinators/log_in_coordinato
 import 'package:loud_question/main/infrastructure/coordinators/register_coordinator.dart'
     as _i75;
 import 'package:loud_question/main/infrastructure/json_converters/problem_detials_json_converter.dart'
-    as _i34;
+    as _i22;
 import 'package:loud_question/repositories/implementations/account_repository.dart'
     as _i50;
 import 'package:loud_question/repositories/implementations/game_repository.dart'
@@ -155,7 +155,7 @@ import 'package:loud_question/repositories/interfaces/token_repository.dart'
 import 'package:loud_question/repositories/interfaces/user_repository.dart'
     as _i45;
 import 'package:loud_question/utils/server_settings.dart' as _i37;
-import 'package:problem_details/problem_details.dart' as _i33;
+import 'package:problem_details/problem_details.dart' as _i21;
 import 'package:shared_preferences/shared_preferences.dart' as _i38;
 
 import '../../../env/env_module.dart' as _i84;
@@ -196,26 +196,26 @@ Future<_i1.GetIt> init(
           _i10.JsonConverter<_i15.CreateLobbyResponse, Map<String, Object?>>>(
       _i16.CreateLobbyResponseJsonConverter());
   gh.singleton<
-          _i10.JsonConverter<_i17.GameStateResponse, Map<String, Object?>>>(
-      _i18.GameStateResponseJsonConverter());
+          _i10.JsonConverter<_i17.GetLobbiesResponse, Map<String, Object?>>>(
+      _i18.GetLobbiesResponseJsonConverter());
   gh.singleton<
           _i10.JsonConverter<_i19.JoinLobbyResponse, Map<String, Object?>>>(
       _i20.JoinLobbyResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i21.GetLobbyResponse, Map<String, Object?>>>(
-      _i22.GetLobbyResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i21.ProblemDetails, Map<String, Object?>>>(
+      _i22.ProblemDetailsJsonConverter());
   gh.singleton<_i10.JsonConverter<_i23.LogOutResponse, Map<String, Object?>>>(
       _i24.LogOutResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i25.SetLeaderRequest, Map<String, Object?>>>(
-      _i26.SetLeaderRequestJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i25.GetLobbyResponse, Map<String, Object?>>>(
+      _i26.GetLobbyResponseJsonConverter());
   gh.singleton<_i10.JsonConverter<_i27.LogInResponse, Map<String, Object?>>>(
       _i28.LogInResponseJsonConverter());
   gh.singleton<_i10.JsonConverter<_i29.GetUserResponse, Map<String, Object?>>>(
       _i30.GetUserResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i31.SetLeaderRequest, Map<String, Object?>>>(
+      _i32.SetLeaderRequestJsonConverter());
   gh.singleton<
-          _i10.JsonConverter<_i31.GetLobbiesResponse, Map<String, Object?>>>(
-      _i32.GetLobbiesResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i33.ProblemDetails, Map<String, Object?>>>(
-      _i34.ProblemDetailsJsonConverter());
+          _i10.JsonConverter<_i33.GameStateResponse, Map<String, Object?>>>(
+      _i34.GameStateResponseJsonConverter());
   await gh.singletonAsync<_i35.ServerExceptionProvider>(
     () => _i36.ProdServerExceptionProvider.create(),
     preResolve: true,

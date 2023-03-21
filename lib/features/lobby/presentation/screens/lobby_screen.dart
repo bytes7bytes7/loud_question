@@ -313,7 +313,7 @@ class _InitStateWidget extends StatelessWidget {
             },
           ),
         ),
-        if (!gameState.readyIDs.contains(UserID.fromString(lobbyInfo.me.id)))
+        if (bloc.state.showSetReadyBtn)
           Positioned(
             left: 0,
             right: 0,
@@ -328,8 +328,7 @@ class _InitStateWidget extends StatelessWidget {
               ),
             ),
           ),
-        if (!(gameState.readyIDs.length == lobbyInfo.guests.length + 1) &&
-            gameState.readyIDs.contains(UserID.fromString(lobbyInfo.me.id)))
+        if (bloc.state.showSetNotReadyBtn && !bloc.state.showStartGameBtn)
           Positioned(
             left: 0,
             right: 0,
@@ -344,7 +343,7 @@ class _InitStateWidget extends StatelessWidget {
               ),
             ),
           ),
-        if (gameState.readyIDs.length == lobbyInfo.guests.length + 1)
+        if (bloc.state.showSetNotReadyBtn && bloc.state.showStartGameBtn)
           Positioned(
             left: 0,
             right: 0,
@@ -395,8 +394,6 @@ class _PlayingStateWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
 
-    final timeEnds = secondsLeft == 0;
-
     return RefreshIndicator(
       onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
       child: Stack(
@@ -439,7 +436,7 @@ class _PlayingStateWidget extends StatelessWidget {
               ),
             ],
           ),
-          if (timeEnds)
+          if (bloc.state.showMoveToAnsweringBtn)
             Positioned(
               left: 0,
               right: 0,
@@ -567,7 +564,7 @@ class _AnsweringStateWidget extends HookWidget {
             },
           ),
         ),
-        if (!gameState.hasAnswered.contains(UserID.fromString(lobbyInfo.me.id)))
+        if (bloc.state.showAnswerTextField)
           Positioned(
             left: 0,
             right: 0,
@@ -610,7 +607,7 @@ class _AnsweringStateWidget extends HookWidget {
               ),
             ),
           ),
-        if (gameState.hasAnswered.length == lobbyInfo.guests.length + 1)
+        if (bloc.state.showRevealRightAnswerBtn)
           Positioned(
             left: 0,
             right: 0,
@@ -758,20 +755,21 @@ class _CheckingStateWidget extends StatelessWidget {
             },
           ),
         ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 30,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
-            child: ElevatedButton(
-              child: const Text('Заново'),
-              onPressed: () => bloc.add(const RestartLobbyEvent()),
+        if (bloc.state.showPlayAgainBtn)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: ElevatedButton(
+                child: const Text('Заново'),
+                onPressed: () => bloc.add(const RestartLobbyEvent()),
+              ),
             ),
           ),
-        ),
       ],
     );
   }
