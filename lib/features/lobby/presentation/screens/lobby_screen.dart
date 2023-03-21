@@ -306,7 +306,7 @@ class _PlayingStateWidget extends StatelessWidget {
                   if (gameState.question != null) ...[
                     Text(
                       'Вопрос',
-                      style: theme.textTheme.titleLarge,
+                      style: theme.textTheme.titleMedium,
                     ),
                     Text(
                       gameState.question!,
@@ -345,6 +345,9 @@ class _AnsweringStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final question = gameState.question;
+    final hasQuestion = question != null;
+    final questionOneOrZero = hasQuestion ? 1 : 0;
 
     return Stack(
       children: [
@@ -353,16 +356,17 @@ class _AnsweringStateWidget extends StatelessWidget {
               lobbyBloc.add(const LoadLobbyEvent(cached: false)),
           child: ListView.separated(
             // info bar, empty box, creator card
-            itemCount: lobbyInfo.guests.length + 3,
+            // question if not null
+            itemCount: lobbyInfo.guests.length + 3 + questionOneOrZero,
             separatorBuilder: (context, index) {
-              if (index == 1) {
+              if (index == 1 + questionOneOrZero) {
                 // creator bar
                 return const TitleBar(
                   text: 'Я',
                 );
               }
 
-              if (index == 2) {
+              if (index == 2 + questionOneOrZero) {
                 // other players bar
                 return TitleBar(
                   text: 'Другие игроки (${lobbyInfo.guests.length})',
@@ -380,12 +384,34 @@ class _AnsweringStateWidget extends StatelessWidget {
                 );
               }
 
-              if (index == 1) {
+              if (index == 1 && hasQuestion) {
+                // question
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Вопрос',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      Text(
+                        question,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              if (index == 1 + questionOneOrZero) {
                 // empty box
                 return const SizedBox.shrink();
               }
 
-              if (index == 2) {
+              if (index == 2 + questionOneOrZero) {
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
@@ -393,19 +419,19 @@ class _AnsweringStateWidget extends StatelessWidget {
               }
 
               if (lobbyInfo.creator.id != lobbyInfo.me.id) {
-                if (index == 3) {
+                if (index == 3 + questionOneOrZero) {
                   return UserCard(
                     user: lobbyInfo.creator,
                   );
                 }
 
                 return UserCard(
-                  user: lobbyInfo.guests[index - 4],
+                  user: lobbyInfo.guests[index - 4 - questionOneOrZero],
                 );
               }
 
               return UserCard(
-                user: lobbyInfo.guests[index - 3],
+                user: lobbyInfo.guests[index - 3 - questionOneOrZero],
               );
             },
           ),
@@ -450,6 +476,21 @@ class _AnsweringStateWidget extends StatelessWidget {
               ),
             ),
           ),
+        if (gameState.hasAnswered.length == lobbyInfo.guests.length + 1)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: ElevatedButton(
+                child: const Text('Узнать ответ'),
+                onPressed: () {},
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -481,17 +522,17 @@ class _CheckingStateWidget extends StatelessWidget {
           onRefresh: () async =>
               lobbyBloc.add(const LoadLobbyEvent(cached: false)),
           child: ListView.separated(
-            // info bar, right answer, empty box, creator card
-            itemCount: lobbyInfo.guests.length + 4,
+            // info bar, right answer, question, empty box, creator card
+            itemCount: lobbyInfo.guests.length + 5,
             separatorBuilder: (context, index) {
-              if (index == 2) {
+              if (index == 3) {
                 // creator bar
                 return const TitleBar(
                   text: 'Я',
                 );
               }
 
-              if (index == 3) {
+              if (index == 4) {
                 // other players bar
                 return TitleBar(
                   text: 'Другие игроки (${lobbyInfo.guests.length})',
@@ -533,11 +574,33 @@ class _CheckingStateWidget extends StatelessWidget {
               }
 
               if (index == 2) {
+                // question
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Вопрос',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      Text(
+                        gameState.question,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              if (index == 3) {
                 // empty box
                 return const SizedBox.shrink();
               }
 
-              if (index == 3) {
+              if (index == 4) {
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
@@ -545,19 +608,19 @@ class _CheckingStateWidget extends StatelessWidget {
               }
 
               if (lobbyInfo.creator.id != lobbyInfo.me.id) {
-                if (index == 4) {
+                if (index == 5) {
                   return UserCard(
                     user: lobbyInfo.creator,
                   );
                 }
 
                 return UserCard(
-                  user: lobbyInfo.guests[index - 5],
+                  user: lobbyInfo.guests[index - 6],
                 );
               }
 
               return UserCard(
-                user: lobbyInfo.guests[index - 4],
+                user: lobbyInfo.guests[index - 5],
               );
             },
           ),
