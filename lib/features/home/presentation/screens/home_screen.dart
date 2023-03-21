@@ -44,12 +44,47 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
 
+    Future<void> openAlert() async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Выход'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const [
+                  Text(
+                    'Вы действительно хотите выйти из учетной записи?',
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Отмена'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Выйти'),
+                onPressed: () {
+                  bloc.add(const LogOutHomeEvent());
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return AppBar(
       title: const Text('Список лобби'),
       actions: [
         IconButton(
           icon: const Icon(Icons.logout),
-          onPressed: () => bloc.add(const LogOutHomeEvent()),
+          onPressed: openAlert,
         ),
       ],
     );
@@ -171,6 +206,12 @@ class _JoinLobbyFAB extends StatelessWidget {
             ),
             actions: [
               TextButton(
+                child: const Text('Отмена'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
                 child: const Text('Присоединиться'),
                 onPressed: () {
                   bloc.add(JoinLobbyHomeEvent(id: id, password: password));
@@ -221,6 +262,12 @@ class _CreateLobbyFAB extends StatelessWidget {
               ),
             ),
             actions: [
+              TextButton(
+                child: const Text('Отмена'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
               TextButton(
                 child: const Text('Создать'),
                 onPressed: () {
