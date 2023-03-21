@@ -8,10 +8,12 @@ class UserCard extends StatelessWidget {
   const UserCard({
     super.key,
     required this.user,
+    this.answer,
     this.onPressed,
   });
 
   final UserVM user;
+  final String? answer;
   final VoidCallback? onPressed;
 
   @override
@@ -49,7 +51,22 @@ class UserCard extends StatelessWidget {
           ),
         ],
       ),
-      subtitle: Text(user.id),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(user.id),
+          if (answer != null)
+            Row(
+              children: [
+                const Text('Ответ:'),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(answer!),
+              ],
+            ),
+        ],
+      ),
       trailing: _TrailingIcon(
         state: user.state,
         theme: theme,

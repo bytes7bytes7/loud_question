@@ -32,4 +32,10 @@ abstract class ProdLobbyProvider implements LobbyProvider {
   Future<JsonEitherWrapper<ProblemDetails, GetLobbyResponse>> getLobby(
     @Path() String id,
   );
+
+  @override
+  @GET('/{id}/listen')
+  Future<JsonEitherWrapper<ProblemDetails, ListenLobbyResponse>> listenLobby(
+    @Path() String id,
+  );
 }

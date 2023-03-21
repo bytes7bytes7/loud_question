@@ -75,6 +75,17 @@ class _ProcessGameStateLobbyEvent extends LobbyEvent {
   List<Object?> get props => [gameState];
 }
 
+class _ProcessLobbyLobbyEvent extends LobbyEvent {
+  const _ProcessLobbyLobbyEvent({
+    required this.lobby,
+  });
+
+  final Lobby lobby;
+
+  @override
+  List<Object?> get props => [lobby];
+}
+
 class _UpdateTimeLobbyEvent extends LobbyEvent {
   const _UpdateTimeLobbyEvent({
     required this.secondsLeft,

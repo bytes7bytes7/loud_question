@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -63,13 +64,49 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> openAlert() async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Начать заново'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const [
+                  Text(
+                    'Вы действительно хотите начать игру заново?',
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Нет'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Да'),
+                onPressed: () {
+                  bloc.add(const RestartLobbyEvent());
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return AppBar(
       title: Text('Лобби $lobbyID'),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.restart_alt),
-          onPressed: () => bloc.add(const RestartLobbyEvent()),
-        ),
+        if (bloc.state.showRestartGameBtn)
+          IconButton(
+            icon: const Icon(Icons.restart_alt),
+            onPressed: openAlert,
+          ),
       ],
     );
   }
@@ -734,6 +771,9 @@ class _CheckingStateWidget extends StatelessWidget {
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
+                  answer: gameState.answers
+                      .firstWhereOrNull((e) => e.userID.str == lobbyInfo.me.id)
+                      ?.answer,
                 );
               }
 
@@ -741,16 +781,29 @@ class _CheckingStateWidget extends StatelessWidget {
                 if (index == 5) {
                   return UserCard(
                     user: lobbyInfo.creator,
+                    answer: gameState.answers
+                        .firstWhereOrNull(
+                          (e) => e.userID.str == lobbyInfo.creator.id,
+                        )
+                        ?.answer,
                   );
                 }
 
+                final user = lobbyInfo.guests[index - 6];
                 return UserCard(
-                  user: lobbyInfo.guests[index - 6],
+                  user: user,
+                  answer: gameState.answers
+                      .firstWhereOrNull((e) => e.userID.str == user.id)
+                      ?.answer,
                 );
               }
 
+              final user = lobbyInfo.guests[index - 5];
               return UserCard(
-                user: lobbyInfo.guests[index - 5],
+                user: user,
+                answer: gameState.answers
+                    .firstWhereOrNull((e) => e.userID.str == user.id)
+                    ?.answer,
               );
             },
           ),

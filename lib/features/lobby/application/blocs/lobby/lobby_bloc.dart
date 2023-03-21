@@ -27,12 +27,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     required AccountRepository accountRepository,
     required DateTimeProvider dateTimeProvider,
     required ListenGameStateProvider listenGameStateProvider,
+    required ListenLobbyProvider listenLobbyProvider,
   })  : _lobbyService = lobbyService,
         _userService = userService,
         _gameService = gameService,
         _accountRepository = accountRepository,
         _dateTimeProvider = dateTimeProvider,
         _listenGameStateProvider = listenGameStateProvider,
+        _listenLobbyProvider = listenLobbyProvider,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
     on<SetLeaderLobbyEvent>(_setLeader, transformer: restartable());
@@ -45,6 +47,10 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     on<RestartLobbyEvent>(_restart, transformer: droppable());
     on<_ProcessGameStateLobbyEvent>(
       _processGameState,
+      transformer: restartable(),
+    );
+    on<_ProcessLobbyLobbyEvent>(
+      _processLobby,
       transformer: restartable(),
     );
     on<_UpdateTimeLobbyEvent>(
@@ -60,24 +66,37 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   final AccountRepository _accountRepository;
   final DateTimeProvider _dateTimeProvider;
   final ListenGameStateProvider _listenGameStateProvider;
+  final ListenLobbyProvider _listenLobbyProvider;
   StreamSubscription<GameState>? _stateSub;
+  StreamSubscription<Lobby>? _lobbySub;
   Timer? _timer;
 
   void dispose() {
     _timer?.cancel();
+
     _stateSub?.cancel();
     _listenGameStateProvider.stop();
+
+    _lobbySub?.cancel();
+    _listenLobbyProvider.stop();
   }
 
   void startPolling(String lobbyID) {
     _lobbyID = LobbyID.fromString(lobbyID);
 
-    // long polling
+    // game state long polling
     _listenGameStateProvider.setLobbyID(_lobbyID);
     _stateSub = _listenGameStateProvider.stream.listen(
       (state) => add(_ProcessGameStateLobbyEvent(gameState: state)),
     );
     _listenGameStateProvider.start();
+
+    // lobby long polling
+    _listenLobbyProvider.setLobbyID(_lobbyID);
+    _lobbySub = _listenLobbyProvider.stream.listen(
+      (lobby) => add(_ProcessLobbyLobbyEvent(lobby: lobby)),
+    );
+    _listenLobbyProvider.start();
   }
 
   Future<void> _load(
@@ -437,6 +456,83 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         gameState: event.gameState,
         secondsLeft: gameState is InitGameState ? const Wrapper(null) : null,
         lobbyInfo: newLobbyInfo,
+      ),
+    );
+  }
+
+  Future<void> _processLobby(
+    _ProcessLobbyLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    final lobby = event.lobby;
+    final oldLobbyVM = state.lobbyInfo;
+    final gameState = state.gameState;
+
+    if (oldLobbyVM == null || gameState == null) {
+      return;
+    }
+
+    final addedIDs = <UserID>[];
+    final deletedIDs = <UserID>[];
+    final stayedIDs = <UserID>[];
+
+    for (final oldGuest in oldLobbyVM.guests) {
+      final currentID = UserID.fromString(oldGuest.id);
+
+      if (lobby.guestIDs.contains(currentID)) {
+        stayedIDs.add(currentID);
+      } else {
+        deletedIDs.add(currentID);
+      }
+    }
+
+    for (final newID in lobby.guestIDs) {
+      if (oldLobbyVM.guests.firstWhereOrNull((e) => e.id == newID.str) ==
+          null) {
+        addedIDs.add(newID);
+      }
+    }
+
+    final myID = oldLobbyVM.me.id;
+
+    final guestVMs = List.of(oldLobbyVM.guests);
+
+    for (final id in deletedIDs) {
+      guestVMs.removeWhere((e) => e.id == id.str);
+    }
+
+    for (final id in addedIDs) {
+      late User guest;
+      try {
+        guest = await _userService.get(id: id);
+      } catch (e) {
+        emit(
+          state.withError('не удалось загрузить информацию об участнике лобби'),
+        );
+
+        return;
+      }
+
+      final guestVM = UserVM(
+        id: id.str,
+        name: guest.name,
+        isMe: id.str == myID,
+        isCreator: id == lobby.creatorID,
+        isLeader: id == gameState.leaderID,
+        state: _getUserState(id, gameState),
+      );
+
+      guestVMs.add(guestVM);
+    }
+
+    await _lobbyService.update(lobby: lobby);
+
+    emit(
+      state.copyWith(
+        isLoading: false,
+        lobbyInfo: oldLobbyVM.copyWith(
+          guests: guestVMs,
+        ),
       ),
     );
   }

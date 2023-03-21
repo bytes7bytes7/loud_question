@@ -21,6 +21,17 @@ class LobbyState extends Equatable with Loadable, Errorable {
 
   final int? secondsLeft;
 
+  bool get showRestartGameBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state == null || lobby == null) {
+      return false;
+    }
+
+    return lobby.me.id != state.leaderID.str;
+  }
+
   bool get showSetReadyBtn {
     final state = gameState;
     final lobby = lobbyInfo;

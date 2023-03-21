@@ -7,4 +7,8 @@ abstract class LobbyProvider {
   Future<JsonEitherWrapper<ProblemDetails, GetLobbyResponse>> getLobby(
     String id,
   );
+
+  Future<JsonEitherWrapper<ProblemDetails, ListenLobbyResponse>> listenLobby(
+    String id,
+  );
 }

@@ -43,4 +43,10 @@ class LobbyService {
       rethrow;
     }
   }
+
+  Future<void> update({
+    required Lobby lobby,
+  }) async {
+    await _lobbyRepository.update(lobby: lobby);
+  }
 }
