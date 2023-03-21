@@ -29,6 +29,12 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         _accountRepository = accountRepository,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
+    on<IAmReadyLobbyEvent>(_setReady, transformer: droppable());
+    on<StartGameLobbyEvent>(_startGame, transformer: droppable());
+    on<StartAnswerLobbyEvent>(_startAnswer, transformer: droppable());
+    on<AnswerLobbyEvent>(_answer, transformer: droppable());
+    on<CheckAnswerLobbyEvent>(_checkAnswer, transformer: droppable());
+    on<RestartLobbyEvent>(_restart, transformer: droppable());
   }
 
   late LobbyID _lobbyID;
@@ -144,6 +150,36 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
       ),
     );
   }
+
+  Future<void> _setReady(
+    IAmReadyLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
+
+  Future<void> _startGame(
+    StartGameLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
+
+  Future<void> _startAnswer(
+    StartAnswerLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
+
+  Future<void> _answer(
+    AnswerLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
+
+  Future<void> _checkAnswer(
+    CheckAnswerLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
+
+  Future<void> _restart(
+    RestartLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {}
 
   UserState _getUserState(UserID userID, GameState gameState) {
     if (gameState is InitGameState) {

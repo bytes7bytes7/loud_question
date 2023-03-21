@@ -17,3 +17,34 @@ class LoadLobbyEvent extends LobbyEvent {
   @override
   List<Object?> get props => [cached];
 }
+
+class IAmReadyLobbyEvent extends LobbyEvent {
+  const IAmReadyLobbyEvent();
+}
+
+class StartGameLobbyEvent extends LobbyEvent {
+  const StartGameLobbyEvent();
+}
+
+class StartAnswerLobbyEvent extends LobbyEvent {
+  const StartAnswerLobbyEvent();
+}
+
+class AnswerLobbyEvent extends LobbyEvent {
+  const AnswerLobbyEvent({
+    required this.answer,
+  });
+
+  final String answer;
+
+  @override
+  List<Object?> get props => [answer];
+}
+
+class CheckAnswerLobbyEvent extends LobbyEvent {
+  const CheckAnswerLobbyEvent();
+}
+
+class RestartLobbyEvent extends LobbyEvent {
+  const RestartLobbyEvent();
+}

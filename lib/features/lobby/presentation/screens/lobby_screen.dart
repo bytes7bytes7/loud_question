@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../common/common.dart';
@@ -24,11 +25,16 @@ class LobbyScreen extends StatelessWidget {
       create: (context) => _getIt.get<LobbyBloc>()
         ..setID(lobbyID)
         ..add(const LoadLobbyEvent(cached: true)),
-      child: Scaffold(
-        appBar: _AppBar(
-          lobbyID: lobbyID,
-        ),
-        body: const _Body(),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: _AppBar(
+              lobbyID: lobbyID,
+              bloc: context.read<LobbyBloc>(),
+            ),
+            body: const _Body(),
+          );
+        },
       ),
     );
   }
@@ -37,9 +43,11 @@ class LobbyScreen extends StatelessWidget {
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
     required this.lobbyID,
+    required this.bloc,
   });
 
   final String lobbyID;
+  final LobbyBloc bloc;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -48,6 +56,12 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text('Лобби $lobbyID'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.restart_alt),
+          onPressed: () => bloc.add(const RestartLobbyEvent()),
+        ),
+      ],
     );
   }
 }
@@ -57,7 +71,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lobbyBloc = context.read<LobbyBloc>();
+    final bloc = context.read<LobbyBloc>();
 
     return BlocConsumer<LobbyBloc, LobbyState>(
       listener: (context, state) {
@@ -80,14 +94,14 @@ class _Body extends StatelessWidget {
 
         if (lobbyInfo == null || gameState == null) {
           return _ErrorWidget(
-            lobbyBloc: lobbyBloc,
+            bloc: bloc,
             lobbyInfo: lobbyInfo,
           );
         }
 
         if (gameState is InitGameState) {
           return _InitStateWidget(
-            lobbyBloc: lobbyBloc,
+            bloc: bloc,
             lobbyInfo: lobbyInfo,
             gameState: gameState,
           );
@@ -95,14 +109,14 @@ class _Body extends StatelessWidget {
 
         if (gameState is PlayingGameState) {
           return _PlayingStateWidget(
-            lobbyBloc: lobbyBloc,
+            bloc: bloc,
             gameState: gameState,
           );
         }
 
         if (gameState is WaitingForAnswerGameState) {
           return _AnsweringStateWidget(
-            lobbyBloc: lobbyBloc,
+            bloc: bloc,
             lobbyInfo: lobbyInfo,
             gameState: gameState,
           );
@@ -110,7 +124,7 @@ class _Body extends StatelessWidget {
 
         if (gameState is CheckingAnswerGameState) {
           return _CheckingStateWidget(
-            lobbyBloc: lobbyBloc,
+            bloc: bloc,
             lobbyInfo: lobbyInfo,
             gameState: gameState,
           );
@@ -124,17 +138,17 @@ class _Body extends StatelessWidget {
 
 class _ErrorWidget extends StatelessWidget {
   const _ErrorWidget({
-    required this.lobbyBloc,
+    required this.bloc,
     required this.lobbyInfo,
   });
 
-  final LobbyBloc lobbyBloc;
+  final LobbyBloc bloc;
   final LobbyInfoVM? lobbyInfo;
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async => lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+      onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
       child: Column(
         children: [
           Expanded(
@@ -161,12 +175,12 @@ class _ErrorWidget extends StatelessWidget {
 
 class _InitStateWidget extends StatelessWidget {
   const _InitStateWidget({
-    required this.lobbyBloc,
+    required this.bloc,
     required this.lobbyInfo,
     required this.gameState,
   });
 
-  final LobbyBloc lobbyBloc;
+  final LobbyBloc bloc;
   final LobbyInfoVM lobbyInfo;
   final InitGameState gameState;
 
@@ -175,8 +189,7 @@ class _InitStateWidget extends StatelessWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async =>
-              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
           child: ListView.separated(
             // info bar, empty box, creator card
             itemCount: lobbyInfo.guests.length + 3,
@@ -247,7 +260,7 @@ class _InitStateWidget extends StatelessWidget {
               ),
               child: ElevatedButton(
                 child: const Text('Я готов'),
-                onPressed: () {},
+                onPressed: () => bloc.add(const IAmReadyLobbyEvent()),
               ),
             ),
           ),
@@ -262,7 +275,7 @@ class _InitStateWidget extends StatelessWidget {
               ),
               child: ElevatedButton(
                 child: const Text('Начать игру!'),
-                onPressed: () {},
+                onPressed: () => bloc.add(const StartGameLobbyEvent()),
               ),
             ),
           ),
@@ -273,11 +286,11 @@ class _InitStateWidget extends StatelessWidget {
 
 class _PlayingStateWidget extends StatelessWidget {
   const _PlayingStateWidget({
-    required this.lobbyBloc,
+    required this.bloc,
     required this.gameState,
   });
 
-  final LobbyBloc lobbyBloc;
+  final LobbyBloc bloc;
   final PlayingGameState gameState;
 
   @override
@@ -285,8 +298,11 @@ class _PlayingStateWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
 
+    // TODO: create timer
+    const timeEnds = true;
+
     return RefreshIndicator(
-      onRefresh: () async => lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+      onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
       child: Stack(
         children: [
           Padding(
@@ -317,6 +333,21 @@ class _PlayingStateWidget extends StatelessWidget {
               ),
             ),
           ),
+          if (timeEnds)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 30,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: ElevatedButton(
+                  child: const Text('Перейти к ответам'),
+                  onPressed: () => bloc.add(const StartAnswerLobbyEvent()),
+                ),
+              ),
+            ),
           // for refresh indicator
           ListView(
             children: [
@@ -331,14 +362,14 @@ class _PlayingStateWidget extends StatelessWidget {
   }
 }
 
-class _AnsweringStateWidget extends StatelessWidget {
+class _AnsweringStateWidget extends HookWidget {
   const _AnsweringStateWidget({
-    required this.lobbyBloc,
+    required this.bloc,
     required this.lobbyInfo,
     required this.gameState,
   });
 
-  final LobbyBloc lobbyBloc;
+  final LobbyBloc bloc;
   final LobbyInfoVM lobbyInfo;
   final WaitingForAnswerGameState gameState;
 
@@ -349,11 +380,12 @@ class _AnsweringStateWidget extends StatelessWidget {
     final hasQuestion = question != null;
     final questionOneOrZero = hasQuestion ? 1 : 0;
 
+    final controller = useTextEditingController();
+
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async =>
-              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
           child: ListView.separated(
             // info bar, empty box, creator card
             // question if not null
@@ -459,9 +491,10 @@ class _AnsweringStateWidget extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: controller,
+                        decoration: const InputDecoration(
                           hintText: 'Ваш ответ...',
                           border: InputBorder.none,
                         ),
@@ -469,7 +502,9 @@ class _AnsweringStateWidget extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.send),
-                      onPressed: () {},
+                      onPressed: () => bloc.add(
+                        AnswerLobbyEvent(answer: controller.text),
+                      ),
                     ),
                   ],
                 ),
@@ -487,7 +522,7 @@ class _AnsweringStateWidget extends StatelessWidget {
               ),
               child: ElevatedButton(
                 child: const Text('Узнать ответ'),
-                onPressed: () {},
+                onPressed: () => bloc.add(const CheckAnswerLobbyEvent()),
               ),
             ),
           ),
@@ -498,12 +533,12 @@ class _AnsweringStateWidget extends StatelessWidget {
 
 class _CheckingStateWidget extends StatelessWidget {
   const _CheckingStateWidget({
-    required this.lobbyBloc,
+    required this.bloc,
     required this.lobbyInfo,
     required this.gameState,
   });
 
-  final LobbyBloc lobbyBloc;
+  final LobbyBloc bloc;
   final LobbyInfoVM lobbyInfo;
   final CheckingAnswerGameState gameState;
 
@@ -519,8 +554,7 @@ class _CheckingStateWidget extends StatelessWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async =>
-              lobbyBloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
           child: ListView.separated(
             // info bar, right answer, question, empty box, creator card
             itemCount: lobbyInfo.guests.length + 5,
@@ -635,7 +669,7 @@ class _CheckingStateWidget extends StatelessWidget {
             ),
             child: ElevatedButton(
               child: const Text('Заново'),
-              onPressed: () {},
+              onPressed: () => bloc.add(const RestartLobbyEvent()),
             ),
           ),
         ),

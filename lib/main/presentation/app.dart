@@ -17,6 +17,7 @@ class App extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: _getIt.get<GoRouter>(),
       title: 'Load Question',
+      debugShowCheckedModeBanner: false,
       theme: _theme.copyWith(
         appBarTheme: _theme.appBarTheme.copyWith(
           backgroundColor: _theme.colorScheme.primary,
