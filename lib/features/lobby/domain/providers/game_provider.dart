@@ -9,6 +9,10 @@ abstract class GameProvider {
     String id,
   );
 
+  Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> listenState(
+    String id,
+  );
+
   Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> setReady(
     String id,
   );

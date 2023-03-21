@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -7,9 +9,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../../repositories/interfaces/account_repository.dart';
 import '../../../../common/application/application.dart';
 import '../../../../common/domain/domain.dart';
-import '../../../domain/services/game_service.dart';
-import '../../../domain/services/lobby_service.dart';
-import '../../../domain/value_objects/game_state/game_state.dart';
+import '../../../domain/domain.dart';
 import '../../view_models/view_models.dart';
 
 part 'lobby_event.dart';
@@ -23,10 +23,12 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     required UserService userService,
     required GameService gameService,
     required AccountRepository accountRepository,
+    required ListenGameStateProvider listenGameStateProvider,
   })  : _lobbyService = lobbyService,
         _userService = userService,
         _gameService = gameService,
         _accountRepository = accountRepository,
+        _listenGameStateProvider = listenGameStateProvider,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
     on<SetReadyLobbyEvent>(_setReady, transformer: droppable());
@@ -36,6 +38,10 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     on<AnswerLobbyEvent>(_answer, transformer: droppable());
     on<CheckAnswerLobbyEvent>(_checkAnswer, transformer: droppable());
     on<RestartLobbyEvent>(_restart, transformer: droppable());
+    on<_ProcessGameStateLobbyEvent>(
+      _processGameState,
+      transformer: restartable(),
+    );
   }
 
   late LobbyID _lobbyID;
@@ -43,9 +49,23 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   final GameService _gameService;
   final UserService _userService;
   final AccountRepository _accountRepository;
+  final ListenGameStateProvider _listenGameStateProvider;
+  StreamSubscription<GameStateResponse>? _stateSub;
 
-  void setID(String lobbyID) {
+  void dispose() {
+    _stateSub?.cancel();
+    _listenGameStateProvider.stop();
+  }
+
+  void startPolling(String lobbyID) {
     _lobbyID = LobbyID.fromString(lobbyID);
+
+    // long polling
+    _listenGameStateProvider.setLobbyID(_lobbyID);
+    _stateSub = _listenGameStateProvider.stream.listen(
+      (state) => add(_ProcessGameStateLobbyEvent(gameState: state.gameState)),
+    );
+    _listenGameStateProvider.start();
   }
 
   Future<void> _load(
@@ -269,6 +289,18 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
       return;
     }
+  }
+
+  Future<void> _processGameState(
+    _ProcessGameStateLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isLoading: false,
+        gameState: event.gameState,
+      ),
+    );
   }
 
   UserState _getUserState(UserID userID, GameState gameState) {

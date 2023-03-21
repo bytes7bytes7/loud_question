@@ -52,3 +52,14 @@ class CheckAnswerLobbyEvent extends LobbyEvent {
 class RestartLobbyEvent extends LobbyEvent {
   const RestartLobbyEvent();
 }
+
+class _ProcessGameStateLobbyEvent extends LobbyEvent {
+  const _ProcessGameStateLobbyEvent({
+    required this.gameState,
+  });
+
+  final GameState gameState;
+
+  @override
+  List<Object?> get props => [gameState];
+}

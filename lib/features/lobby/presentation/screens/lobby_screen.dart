@@ -23,16 +23,24 @@ class LobbyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _getIt.get<LobbyBloc>()
-        ..setID(lobbyID)
+        ..startPolling(lobbyID)
         ..add(const LoadLobbyEvent(cached: true)),
       child: Builder(
         builder: (context) {
-          return Scaffold(
-            appBar: _AppBar(
-              lobbyID: lobbyID,
-              bloc: context.read<LobbyBloc>(),
+          final bloc = context.read<LobbyBloc>();
+
+          return WillPopScope(
+            onWillPop: () async {
+              bloc.dispose();
+              return true;
+            },
+            child: Scaffold(
+              appBar: _AppBar(
+                lobbyID: lobbyID,
+                bloc: bloc,
+              ),
+              body: const _Body(),
             ),
-            body: const _Body(),
           );
         },
       ),
