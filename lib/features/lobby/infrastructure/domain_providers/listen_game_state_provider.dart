@@ -8,6 +8,7 @@ import '../../../common/domain/domain.dart';
 import '../../domain/dto/game_state_response/game_state_response.dart';
 import '../../domain/providers/game_provider.dart';
 import '../../domain/providers/listen_game_state_provider.dart';
+import '../../domain/value_objects/game_state/game_state.dart';
 
 @Injectable(as: ListenGameStateProvider)
 class ProdListenGameStateProvider implements ListenGameStateProvider {
@@ -19,7 +20,7 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
   final GameProvider _gameProvider;
 
   var _working = false;
-  final _controller = StreamController<GameStateResponse>.broadcast();
+  final _controller = StreamController<GameState>.broadcast();
 
   @override
   void setLobbyID(LobbyID id) {
@@ -39,7 +40,7 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
   }
 
   @override
-  Stream<GameStateResponse> get stream => _controller.stream;
+  Stream<GameState> get stream => _controller.stream;
 
   Future<void> _work() async {
     while (_working) {
@@ -52,12 +53,18 @@ class ProdListenGameStateProvider implements ListenGameStateProvider {
       }
 
       if (id == _lobbyID.str && _working && response != null) {
-        final result = response.value.getRight().toNullable();
-        if (result != null) {
-          if (!_controller.isClosed) {
-            _controller.add(result);
-          }
-        }
+        response.value.fold(
+          (l) {
+            if (l.status == 401) {
+              stop();
+            }
+          },
+          (r) {
+            if (!_controller.isClosed) {
+              _controller.add(r.gameState);
+            }
+          },
+        );
       }
     }
   }

@@ -1,7 +1,7 @@
 import '../../../common/common.dart';
-import '../dto/game_state_response/game_state_response.dart';
+import '../value_objects/game_state/game_state.dart';
 
 abstract class ListenGameStateProvider
-    implements LongPollingProvider<GameStateResponse> {
+    implements LongPollingProvider<GameState> {
   void setLobbyID(LobbyID id);
 }

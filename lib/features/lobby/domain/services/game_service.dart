@@ -47,6 +47,12 @@ class GameService {
     }
   }
 
+  Future<void> update({
+    required GameState gameState,
+  }) async {
+    await _gameRepository.update(gameState: gameState);
+  }
+
   Future<void> setLeader({
     required LobbyID id,
     required UserID userID,

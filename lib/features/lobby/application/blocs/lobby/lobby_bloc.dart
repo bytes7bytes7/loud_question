@@ -60,7 +60,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   final AccountRepository _accountRepository;
   final DateTimeProvider _dateTimeProvider;
   final ListenGameStateProvider _listenGameStateProvider;
-  StreamSubscription<GameStateResponse>? _stateSub;
+  StreamSubscription<GameState>? _stateSub;
   Timer? _timer;
 
   void dispose() {
@@ -75,7 +75,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     // long polling
     _listenGameStateProvider.setLobbyID(_lobbyID);
     _stateSub = _listenGameStateProvider.stream.listen(
-      (state) => add(_ProcessGameStateLobbyEvent(gameState: state.gameState)),
+      (state) => add(_ProcessGameStateLobbyEvent(gameState: state)),
     );
     _listenGameStateProvider.start();
   }
@@ -358,6 +358,57 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   ) async {
     final gameState = event.gameState;
 
+    final oldLobbyInfo = state.lobbyInfo;
+
+    LobbyInfoVM? newLobbyInfo;
+    if (oldLobbyInfo != null) {
+      final oldCreatorVM = oldLobbyInfo.creator;
+
+      final myID = UserID.fromString(oldLobbyInfo.me.id);
+
+      final creatorVM = UserVM(
+        id: oldCreatorVM.id,
+        name: oldCreatorVM.name,
+        isCreator: true,
+        isLeader: oldCreatorVM.id == gameState.leaderID.str,
+        isMe: oldCreatorVM.id == myID.str,
+        state: _getUserState(UserID.fromString(oldCreatorVM.id), gameState),
+      );
+
+      final oldMeVM = oldLobbyInfo.me;
+
+      final meVM = UserVM(
+        id: oldMeVM.id,
+        name: oldMeVM.name,
+        isMe: true,
+        isCreator: oldMeVM.id == oldLobbyInfo.creator.id,
+        isLeader: oldMeVM.id == gameState.leaderID.str,
+        state: _getUserState(UserID.fromString(oldMeVM.id), gameState),
+      );
+
+      final guestsVM = <UserVM>[];
+      for (final oldGuestVM in oldLobbyInfo.guests) {
+        final guestVM = UserVM(
+          id: oldGuestVM.id,
+          name: oldGuestVM.name,
+          isMe: oldGuestVM.id == myID.str,
+          isCreator: oldGuestVM.id == oldLobbyInfo.creator.id,
+          isLeader: oldGuestVM.id == gameState.leaderID.str,
+          state: _getUserState(UserID.fromString(oldGuestVM.id), gameState),
+        );
+
+        guestsVM.add(guestVM);
+      }
+
+      newLobbyInfo = LobbyInfoVM(
+        id: oldLobbyInfo.id,
+        me: meVM,
+        creator: creatorVM,
+        createdAtInMSSinceEpoch: oldLobbyInfo.createdAtInMSSinceEpoch,
+        guests: guestsVM,
+      );
+    }
+
     _timer?.cancel();
 
     if (gameState is PlayingGameState) {
@@ -378,11 +429,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
       });
     }
 
+    await _gameService.update(gameState: gameState);
+
     emit(
       state.copyWith(
         isLoading: false,
         gameState: event.gameState,
         secondsLeft: gameState is InitGameState ? const Wrapper(null) : null,
+        lobbyInfo: newLobbyInfo,
       ),
     );
   }

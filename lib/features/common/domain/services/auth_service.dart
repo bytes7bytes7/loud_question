@@ -136,7 +136,9 @@ class AuthService {
 
     await response.value.fold(
       (l) async {
-        throw Exception();
+        _userController.add(null);
+        await _accountRepository.removeMyID();
+        await _tokenService.removeToken();
       },
       (r) async {
         _userController.add(null);

@@ -303,7 +303,7 @@ class _InitStateWidget extends StatelessWidget {
                 );
               }
 
-              final user = lobbyInfo.guests[index - 4];
+              final user = lobbyInfo.guests[index - 3];
               final isLeader = user.id == gameState.leaderID.str;
               return UserCard(
                 user: user,
