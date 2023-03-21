@@ -29,7 +29,7 @@ class LobbyState extends Equatable with Loadable, Errorable {
       return false;
     }
 
-    return lobby.me.id != state.leaderID.str;
+    return lobby.me.id == state.leaderID.str;
   }
 
   bool get showSetReadyBtn {
@@ -118,7 +118,7 @@ class LobbyState extends Equatable with Loadable, Errorable {
       return false;
     }
 
-    return lobby.me.id != state.leaderID.str;
+    return lobby.me.id == state.leaderID.str;
   }
 
   LobbyState withLoading() => copyWith(isLoading: true);

@@ -26,7 +26,7 @@ class LobbyScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => _getIt.get<LobbyBloc>()
         ..startPolling(lobbyID)
-        ..add(const LoadLobbyEvent(cached: true)),
+        ..add(const LoadLobbyEvent()),
       child: Builder(
         builder: (context) {
           final bloc = context.read<LobbyBloc>();
@@ -195,7 +195,7 @@ class _ErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
+      onRefresh: () async => bloc.add(const LoadLobbyEvent()),
       child: Column(
         children: [
           Expanded(
@@ -273,7 +273,7 @@ class _InitStateWidget extends StatelessWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent()),
           child: ListView.separated(
             // info bar, empty box, creator card
             itemCount: lobbyInfo.guests.length + 3,
@@ -432,7 +432,7 @@ class _PlayingStateWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return RefreshIndicator(
-      onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
+      onRefresh: () async => bloc.add(const LoadLobbyEvent()),
       child: Stack(
         children: [
           Padding(
@@ -518,7 +518,7 @@ class _AnsweringStateWidget extends HookWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent()),
           child: ListView.separated(
             // info bar, empty box, creator card
             // question if not null
@@ -687,7 +687,7 @@ class _CheckingStateWidget extends StatelessWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: () async => bloc.add(const LoadLobbyEvent(cached: false)),
+          onRefresh: () async => bloc.add(const LoadLobbyEvent()),
           child: ListView.separated(
             // info bar, right answer, question, empty box, creator card
             itemCount: lobbyInfo.guests.length + 5,

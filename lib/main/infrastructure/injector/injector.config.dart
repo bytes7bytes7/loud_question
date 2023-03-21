@@ -25,15 +25,15 @@ import 'package:loud_question/features/auth/auth.dart' as _i76;
 import 'package:loud_question/features/common/common.dart' as _i53;
 import 'package:loud_question/features/common/domain/domain.dart' as _i45;
 import 'package:loud_question/features/common/domain/dto/get_user_response/get_user_response.dart'
-    as _i31;
-import 'package:loud_question/features/common/domain/dto/log_in_response/log_in_response.dart'
-    as _i23;
-import 'package:loud_question/features/common/domain/dto/log_out_response/log_out_response.dart'
     as _i29;
-import 'package:loud_question/features/common/domain/dto/register_response/register_response.dart'
+import 'package:loud_question/features/common/domain/dto/log_in_response/log_in_response.dart'
     as _i27;
-import 'package:loud_question/features/common/domain/dto/verify_token_response/verify_token_response.dart'
+import 'package:loud_question/features/common/domain/dto/log_out_response/log_out_response.dart'
+    as _i33;
+import 'package:loud_question/features/common/domain/dto/register_response/register_response.dart'
     as _i13;
+import 'package:loud_question/features/common/domain/dto/verify_token_response/verify_token_response.dart'
+    as _i11;
 import 'package:loud_question/features/common/domain/providers/auth_exception_provider.dart'
     as _i58;
 import 'package:loud_question/features/common/domain/providers/auth_provider.dart'
@@ -57,15 +57,15 @@ import 'package:loud_question/features/common/infrastructure/domain_providers/se
 import 'package:loud_question/features/common/infrastructure/domain_providers/user_provider/user_provider.dart'
     as _i46;
 import 'package:loud_question/features/common/infrastructure/json_converters/get_user_response_json_converter.dart'
-    as _i32;
-import 'package:loud_question/features/common/infrastructure/json_converters/log_in_response_json_converter.dart'
-    as _i24;
-import 'package:loud_question/features/common/infrastructure/json_converters/log_out_response_json_converter.dart'
     as _i30;
-import 'package:loud_question/features/common/infrastructure/json_converters/register_response_json_converter.dart'
+import 'package:loud_question/features/common/infrastructure/json_converters/log_in_response_json_converter.dart'
     as _i28;
-import 'package:loud_question/features/common/infrastructure/json_converters/verify_token_response_json_converter.dart'
+import 'package:loud_question/features/common/infrastructure/json_converters/log_out_response_json_converter.dart'
+    as _i34;
+import 'package:loud_question/features/common/infrastructure/json_converters/register_response_json_converter.dart'
     as _i14;
+import 'package:loud_question/features/common/infrastructure/json_converters/verify_token_response_json_converter.dart'
+    as _i12;
 import 'package:loud_question/features/home/application/application.dart'
     as _i8;
 import 'package:loud_question/features/home/application/blocs/home/home_bloc.dart'
@@ -102,9 +102,9 @@ import 'package:loud_question/features/lobby/domain/dto/game_state_response/game
 import 'package:loud_question/features/lobby/domain/dto/get_lobby_response/get_lobby_response.dart'
     as _i21;
 import 'package:loud_question/features/lobby/domain/dto/listen_lobby_response/listen_lobby_response.dart'
-    as _i11;
-import 'package:loud_question/features/lobby/domain/dto/set_leader_request/set_leader_request.dart'
     as _i25;
+import 'package:loud_question/features/lobby/domain/dto/set_leader_request/set_leader_request.dart'
+    as _i23;
 import 'package:loud_question/features/lobby/domain/providers/game_provider.dart'
     as _i64;
 import 'package:loud_question/features/lobby/domain/providers/listen_game_state_provider.dart'
@@ -132,9 +132,9 @@ import 'package:loud_question/features/lobby/infrastructure/json_converters/game
 import 'package:loud_question/features/lobby/infrastructure/json_converters/get_lobby_response_json_converter.dart'
     as _i22;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/listen_lobby_response_json_converter.dart'
-    as _i12;
-import 'package:loud_question/features/lobby/infrastructure/json_converters/set_leader_request_json_converter.dart'
     as _i26;
+import 'package:loud_question/features/lobby/infrastructure/json_converters/set_leader_request_json_converter.dart'
+    as _i24;
 import 'package:loud_question/main/infrastructure/coordinators/home_coordinator.dart'
     as _i9;
 import 'package:loud_question/main/infrastructure/coordinators/log_in_coordinator.dart'
@@ -142,7 +142,7 @@ import 'package:loud_question/main/infrastructure/coordinators/log_in_coordinato
 import 'package:loud_question/main/infrastructure/coordinators/register_coordinator.dart'
     as _i77;
 import 'package:loud_question/main/infrastructure/json_converters/problem_detials_json_converter.dart'
-    as _i34;
+    as _i32;
 import 'package:loud_question/repositories/implementations/account_repository.dart'
     as _i52;
 import 'package:loud_question/repositories/implementations/game_repository.dart'
@@ -163,7 +163,7 @@ import 'package:loud_question/repositories/interfaces/token_repository.dart'
 import 'package:loud_question/repositories/interfaces/user_repository.dart'
     as _i47;
 import 'package:loud_question/utils/server_settings.dart' as _i39;
-import 'package:problem_details/problem_details.dart' as _i33;
+import 'package:problem_details/problem_details.dart' as _i31;
 import 'package:shared_preferences/shared_preferences.dart' as _i40;
 
 import '../../../env/env_module.dart' as _i88;
@@ -196,11 +196,10 @@ Future<_i1.GetIt> init(
   gh.singleton<_i8.HomeCoordinator>(
       _i9.ProdHomeCoordinator(goRouter: gh<_i7.GoRouter>()));
   gh.singleton<
-          _i10.JsonConverter<_i11.ListenLobbyResponse, Map<String, Object?>>>(
-      _i12.ListenLobbyResponseJsonConverter());
-  gh.singleton<
-          _i10.JsonConverter<_i13.VerifyTokenResponse, Map<String, Object?>>>(
-      _i14.VerifyTokenResponseJsonConverter());
+          _i10.JsonConverter<_i11.VerifyTokenResponse, Map<String, Object?>>>(
+      _i12.VerifyTokenResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i13.RegisterResponse, Map<String, Object?>>>(
+      _i14.RegisterResponseJsonConverter());
   gh.singleton<
           _i10.JsonConverter<_i15.CreateLobbyResponse, Map<String, Object?>>>(
       _i16.CreateLobbyResponseJsonConverter());
@@ -212,18 +211,19 @@ Future<_i1.GetIt> init(
       _i20.JoinLobbyResponseJsonConverter());
   gh.singleton<_i10.JsonConverter<_i21.GetLobbyResponse, Map<String, Object?>>>(
       _i22.GetLobbyResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i23.LogInResponse, Map<String, Object?>>>(
-      _i24.LogInResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i25.SetLeaderRequest, Map<String, Object?>>>(
-      _i26.SetLeaderRequestJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i27.RegisterResponse, Map<String, Object?>>>(
-      _i28.RegisterResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i29.LogOutResponse, Map<String, Object?>>>(
-      _i30.LogOutResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i31.GetUserResponse, Map<String, Object?>>>(
-      _i32.GetUserResponseJsonConverter());
-  gh.singleton<_i10.JsonConverter<_i33.ProblemDetails, Map<String, Object?>>>(
-      _i34.ProblemDetailsJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i23.SetLeaderRequest, Map<String, Object?>>>(
+      _i24.SetLeaderRequestJsonConverter());
+  gh.singleton<
+          _i10.JsonConverter<_i25.ListenLobbyResponse, Map<String, Object?>>>(
+      _i26.ListenLobbyResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i27.LogInResponse, Map<String, Object?>>>(
+      _i28.LogInResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i29.GetUserResponse, Map<String, Object?>>>(
+      _i30.GetUserResponseJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i31.ProblemDetails, Map<String, Object?>>>(
+      _i32.ProblemDetailsJsonConverter());
+  gh.singleton<_i10.JsonConverter<_i33.LogOutResponse, Map<String, Object?>>>(
+      _i34.LogOutResponseJsonConverter());
   gh.singleton<
           _i10.JsonConverter<_i35.GameStateResponse, Map<String, Object?>>>(
       _i36.GameStateResponseJsonConverter());

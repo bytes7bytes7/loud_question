@@ -58,7 +58,10 @@ class UserCard extends StatelessWidget {
           if (answer != null)
             Row(
               children: [
-                const Text('Ответ:'),
+                Text(
+                  'Ответ:',
+                  style: theme.textTheme.labelLarge,
+                ),
                 const SizedBox(
                   width: 5,
                 ),
