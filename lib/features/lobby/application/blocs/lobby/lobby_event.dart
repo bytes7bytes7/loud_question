@@ -18,6 +18,17 @@ class LoadLobbyEvent extends LobbyEvent {
   List<Object?> get props => [cached];
 }
 
+class SetLeaderLobbyEvent extends LobbyEvent {
+  const SetLeaderLobbyEvent({
+    required this.userID,
+  });
+
+  final String userID;
+
+  @override
+  List<Object?> get props => [userID];
+}
+
 class SetReadyLobbyEvent extends LobbyEvent {
   const SetReadyLobbyEvent();
 }

@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import '../../../common/common.dart';
 import '../../application/blocs/lobby/lobby_bloc.dart';
 import '../../application/view_models/lobby_info_vm/lobby_info_vm.dart';
+import '../../application/view_models/user_vm/user_vm.dart';
 import '../../domain/value_objects/game_state/game_state.dart';
 import '../widgets/widgets.dart';
 
@@ -195,6 +196,43 @@ class _InitStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCreator = lobbyInfo.me.id == lobbyInfo.creator.id;
+
+    Future<void> openAlert(UserVM user) async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Ведущий'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text(
+                    'Сделать ${user.name} ведущим?',
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('Нет'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Да'),
+                onPressed: () {
+                  bloc.add(SetLeaderLobbyEvent(userID: user.id));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Stack(
       children: [
         RefreshIndicator(
@@ -237,6 +275,7 @@ class _InitStateWidget extends StatelessWidget {
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
+                  onPressed: isCreator ? () => openAlert(lobbyInfo.me) : null,
                 );
               }
 
@@ -247,13 +286,17 @@ class _InitStateWidget extends StatelessWidget {
                   );
                 }
 
+                final user = lobbyInfo.guests[index - 4];
                 return UserCard(
-                  user: lobbyInfo.guests[index - 4],
+                  user: user,
+                  onPressed: isCreator ? () => openAlert(user) : null,
                 );
               }
 
+              final user = lobbyInfo.guests[index - 4];
               return UserCard(
-                user: lobbyInfo.guests[index - 3],
+                user: user,
+                onPressed: isCreator ? () => openAlert(user) : null,
               );
             },
           ),
@@ -356,10 +399,13 @@ class _PlayingStateWidget extends StatelessWidget {
                     'Осталось',
                     style: theme.textTheme.headlineMedium,
                   ),
-                  Text(
-                    secondsLeft == null ? '-' : secondsLeft.toString(),
-                    style: theme.textTheme.displayLarge,
-                  ),
+                  if (secondsLeft != null)
+                    Text(
+                      secondsLeft.toString(),
+                      style: theme.textTheme.displayLarge,
+                    )
+                  else
+                    const CircularProgressIndicator(),
                   if (gameState.question != null) ...[
                     Text(
                       'Вопрос',

@@ -40,6 +40,13 @@ abstract class ProdGameProvider implements GameProvider {
   );
 
   @override
+  @POST('/{id}/set_leader')
+  Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> setLeader(
+    @Path() String id,
+    @Body() SetLeaderRequest request,
+  );
+
+  @override
   @POST('{id}/ready')
   Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> setReady(
     @Path() String id,

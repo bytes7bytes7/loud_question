@@ -8,66 +8,111 @@ class UserCard extends StatelessWidget {
   const UserCard({
     super.key,
     required this.user,
+    this.onPressed,
   });
 
   final UserVM user;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final statusIconColor = theme.colorScheme.primary;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 10,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ListTile(
+      onTap: onPressed,
+      title: Row(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  if (user.isCreator)
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        right: _iconRightPadding,
-                      ),
-                      child: Icon(Icons.star),
-                    ),
-                  if (user.isLeader)
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        right: _iconRightPadding,
-                      ),
-                      child: Icon(Icons.record_voice_over),
-                    ),
-                  Text(
-                    user.name,
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ],
+          if (user.isCreator)
+            Padding(
+              padding: const EdgeInsets.only(
+                right: _iconRightPadding,
               ),
-              Text(user.id),
-            ],
+              child: Icon(
+                Icons.star,
+                color: statusIconColor,
+              ),
+            ),
+          if (user.isLeader)
+            Padding(
+              padding: const EdgeInsets.only(
+                right: _iconRightPadding,
+              ),
+              child: Icon(
+                Icons.record_voice_over,
+                color: statusIconColor,
+              ),
+            ),
+          Text(
+            user.name,
+            style: theme.textTheme.titleLarge,
           ),
-          if (user.state == UserState.notReady) const Icon(Icons.timelapse),
-          if (user.state == UserState.ready) const Icon(Icons.done),
-          if (user.state == UserState.answering) const Icon(Icons.timelapse),
-          if (user.state == UserState.answered) const Icon(Icons.done),
-          if (user.state == UserState.rightAnswer)
-            Icon(
-              Icons.done_all,
-              color: theme.colorScheme.primary,
-            ),
-          if (user.state == UserState.wrongAnswer)
-            Icon(
-              Icons.error_outline,
-              color: theme.colorScheme.error,
-            ),
         ],
       ),
+      subtitle: Text(user.id),
+      trailing: _TrailingIcon(
+        state: user.state,
+        theme: theme,
+      ),
     );
+  }
+}
+
+class _TrailingIcon extends StatelessWidget {
+  const _TrailingIcon({
+    required this.state,
+    required this.theme,
+  });
+
+  final UserState state;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = theme.colorScheme.onSurface;
+
+    if (state == UserState.notReady) {
+      return Icon(
+        Icons.timelapse,
+        color: color,
+      );
+    }
+
+    if (state == UserState.ready) {
+      return Icon(
+        Icons.done,
+        color: color,
+      );
+    }
+
+    if (state == UserState.answering) {
+      return Icon(
+        Icons.timelapse,
+        color: color,
+      );
+    }
+
+    if (state == UserState.answered) {
+      return Icon(
+        Icons.done,
+        color: color,
+      );
+    }
+
+    if (state == UserState.rightAnswer) {
+      return Icon(
+        Icons.done_all,
+        color: theme.colorScheme.primary,
+      );
+    }
+
+    if (state == UserState.wrongAnswer) {
+      return Icon(
+        Icons.error_outline,
+        color: theme.colorScheme.error,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

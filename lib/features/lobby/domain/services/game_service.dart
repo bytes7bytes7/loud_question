@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../repositories/interfaces/game_repository.dart';
 import '../../../common/domain/domain.dart';
 import '../dto/give_answer_request/give_answer_request.dart';
+import '../dto/set_leader_request/set_leader_request.dart';
 import '../providers/game_provider.dart';
 import '../value_objects/game_state/game_state.dart';
 
@@ -39,6 +40,30 @@ class GameService {
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
           return r.gameState;
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> setLeader({
+    required LobbyID id,
+    required UserID userID,
+  }) async {
+    try {
+      final request = SetLeaderRequest(userID: userID);
+      final response = await _gameProvider.setLeader(
+        id.str,
+        request,
+      );
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not set leader');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
         },
       );
     } catch (e) {

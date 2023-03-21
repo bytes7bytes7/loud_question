@@ -71,6 +71,35 @@ class _ProdGameProvider implements ProdGameProvider {
   }
 
   @override
+  Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> setLeader(
+    id,
+    request,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<JsonEitherWrapper<ProblemDetails, GameStateResponse>>(
+            Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+                .compose(
+                  _dio.options,
+                  '/${id}/set_leader',
+                  queryParameters: queryParameters,
+                  data: _data,
+                )
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = JsonEitherWrapper<ProblemDetails, GameStateResponse>.fromJson(
+        _result.data!);
+    return value;
+  }
+
+  @override
   Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> setReady(
       id) async {
     const _extra = <String, dynamic>{};

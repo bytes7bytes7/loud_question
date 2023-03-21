@@ -35,6 +35,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         _listenGameStateProvider = listenGameStateProvider,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
+    on<SetLeaderLobbyEvent>(_setLeader, transformer: restartable());
     on<SetReadyLobbyEvent>(_setReady, transformer: droppable());
     on<SetNotReadyLobbyEvent>(_setNotReady, transformer: droppable());
     on<StartGameLobbyEvent>(_startGame, transformer: droppable());
@@ -210,6 +211,26 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         secondsLeft: Wrapper(secondsLeft),
       ),
     );
+  }
+
+  Future<void> _setLeader(
+    SetLeaderLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.setLeader(
+        id: _lobbyID,
+        userID: UserID.fromString(event.userID),
+      );
+    } catch (e) {
+      emit(
+        state.withError('Ошибка смены ведущего'),
+      );
+
+      return;
+    }
   }
 
   Future<void> _setReady(
