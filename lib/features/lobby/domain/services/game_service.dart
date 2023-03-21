@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../repositories/interfaces/game_repository.dart';
 import '../../../common/domain/domain.dart';
+import '../dto/give_answer_request/give_answer_request.dart';
 import '../providers/game_provider.dart';
 import '../value_objects/game_state/game_state.dart';
 
@@ -45,5 +46,138 @@ class GameService {
     }
   }
 
-  Future<void> update({required GameState gameState}) async {}
+  Future<void> setReady({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.setReady(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not set ready');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> setNotReady({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.setNotReady(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not set notReady');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> startGame({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.startGame(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not start game');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> startAnswer({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.startAnswer(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not start answer');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> giveAnswer({
+    required LobbyID id,
+    required String answer,
+  }) async {
+    try {
+      final request = GiveAnswerRequest(answer: answer);
+      final response = await _gameProvider.giveAnswer(id.str, request);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not give answer');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getAnswer({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.getAnswer(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not get answer');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> restart({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.restart(id.str);
+
+      await response.value.fold(
+        (l) {
+          throw Exception('Can not restart game');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -18,8 +18,12 @@ class LoadLobbyEvent extends LobbyEvent {
   List<Object?> get props => [cached];
 }
 
-class IAmReadyLobbyEvent extends LobbyEvent {
-  const IAmReadyLobbyEvent();
+class SetReadyLobbyEvent extends LobbyEvent {
+  const SetReadyLobbyEvent();
+}
+
+class SetNotReadyLobbyEvent extends LobbyEvent {
+  const SetNotReadyLobbyEvent();
 }
 
 class StartGameLobbyEvent extends LobbyEvent {

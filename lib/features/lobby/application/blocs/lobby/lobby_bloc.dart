@@ -29,7 +29,8 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         _accountRepository = accountRepository,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
-    on<IAmReadyLobbyEvent>(_setReady, transformer: droppable());
+    on<SetReadyLobbyEvent>(_setReady, transformer: droppable());
+    on<SetNotReadyLobbyEvent>(_setNotReady, transformer: droppable());
     on<StartGameLobbyEvent>(_startGame, transformer: droppable());
     on<StartAnswerLobbyEvent>(_startAnswer, transformer: droppable());
     on<AnswerLobbyEvent>(_answer, transformer: droppable());
@@ -152,34 +153,123 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   }
 
   Future<void> _setReady(
-    IAmReadyLobbyEvent event,
+    SetReadyLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.setReady(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка готовности'),
+      );
+
+      return;
+    }
+  }
+
+  Future<void> _setNotReady(
+    SetNotReadyLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.setNotReady(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка отмены готовности'),
+      );
+
+      return;
+    }
+  }
 
   Future<void> _startGame(
     StartGameLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.startGame(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка начала игры'),
+      );
+
+      return;
+    }
+  }
 
   Future<void> _startAnswer(
     StartAnswerLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.startAnswer(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка перехода к ответам'),
+      );
+
+      return;
+    }
+  }
 
   Future<void> _answer(
     AnswerLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.giveAnswer(id: _lobbyID, answer: event.answer);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка передачи ответа'),
+      );
+
+      return;
+    }
+  }
 
   Future<void> _checkAnswer(
     CheckAnswerLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.getAnswer(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка получения правильного ответа'),
+      );
+
+      return;
+    }
+  }
 
   Future<void> _restart(
     RestartLobbyEvent event,
     Emitter<LobbyState> emit,
-  ) async {}
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      await _gameService.restart(id: _lobbyID);
+    } catch (e) {
+      emit(
+        state.withError('Ошибка перезапуска игры'),
+      );
+
+      return;
+    }
+  }
 
   UserState _getUserState(UserID userID, GameState gameState) {
     if (gameState is InitGameState) {

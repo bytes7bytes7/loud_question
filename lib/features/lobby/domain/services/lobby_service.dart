@@ -43,6 +43,4 @@ class LobbyService {
       rethrow;
     }
   }
-
-  Future<void> update({required Lobby lobby}) async {}
 }

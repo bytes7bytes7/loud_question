@@ -260,7 +260,23 @@ class _InitStateWidget extends StatelessWidget {
               ),
               child: ElevatedButton(
                 child: const Text('Я готов'),
-                onPressed: () => bloc.add(const IAmReadyLobbyEvent()),
+                onPressed: () => bloc.add(const SetReadyLobbyEvent()),
+              ),
+            ),
+          ),
+        if (!(gameState.readyIDs.length == lobbyInfo.guests.length + 1) &&
+            gameState.readyIDs.contains(UserID.fromString(lobbyInfo.me.id)))
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: ElevatedButton(
+                child: const Text('Я не готов'),
+                onPressed: () => bloc.add(const SetNotReadyLobbyEvent()),
               ),
             ),
           ),
@@ -273,9 +289,24 @@ class _InitStateWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
               ),
-              child: ElevatedButton(
-                child: const Text('Начать игру!'),
-                onPressed: () => bloc.add(const StartGameLobbyEvent()),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      child: const Text('Я не готов'),
+                      onPressed: () => bloc.add(const SetNotReadyLobbyEvent()),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      child: const Text('Начать игру!'),
+                      onPressed: () => bloc.add(const StartGameLobbyEvent()),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -333,6 +364,13 @@ class _PlayingStateWidget extends StatelessWidget {
               ),
             ),
           ),
+          ListView(
+            children: [
+              SizedBox(
+                height: size.height,
+              ),
+            ],
+          ),
           if (timeEnds)
             Positioned(
               left: 0,
@@ -349,13 +387,6 @@ class _PlayingStateWidget extends StatelessWidget {
               ),
             ),
           // for refresh indicator
-          ListView(
-            children: [
-              SizedBox(
-                height: size.height,
-              ),
-            ],
-          ),
         ],
       ),
     );
