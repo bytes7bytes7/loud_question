@@ -272,31 +272,43 @@ class _InitStateWidget extends StatelessWidget {
               }
 
               if (index == 2) {
+                final isLeader = lobbyInfo.me.id == gameState.leaderID.str;
+
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
-                  onPressed: isCreator ? () => openAlert(lobbyInfo.me) : null,
+                  onPressed: isCreator && !isLeader
+                      ? () => openAlert(lobbyInfo.me)
+                      : null,
                 );
               }
 
               if (lobbyInfo.creator.id != lobbyInfo.me.id) {
                 if (index == 3) {
+                  final isLeader =
+                      lobbyInfo.creator.id == gameState.leaderID.str;
                   return UserCard(
                     user: lobbyInfo.creator,
+                    onPressed:
+                        !isLeader ? () => openAlert(lobbyInfo.creator) : null,
                   );
                 }
 
                 final user = lobbyInfo.guests[index - 4];
+                final isLeader = user.id == gameState.leaderID.str;
                 return UserCard(
                   user: user,
-                  onPressed: isCreator ? () => openAlert(user) : null,
+                  onPressed:
+                      isCreator && !isLeader ? () => openAlert(user) : null,
                 );
               }
 
               final user = lobbyInfo.guests[index - 4];
+              final isLeader = user.id == gameState.leaderID.str;
               return UserCard(
                 user: user,
-                onPressed: isCreator ? () => openAlert(user) : null,
+                onPressed:
+                    isCreator && !isLeader ? () => openAlert(user) : null,
               );
             },
           ),
