@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../../repositories/interfaces/account_repository.dart';
 import '../../../../../utils/wrapper.dart';
@@ -28,6 +29,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     required DateTimeProvider dateTimeProvider,
     required ListenGameStateProvider listenGameStateProvider,
     required ListenLobbyProvider listenLobbyProvider,
+    required AudioPlayer player,
   })  : _lobbyService = lobbyService,
         _userService = userService,
         _gameService = gameService,
@@ -35,6 +37,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
         _dateTimeProvider = dateTimeProvider,
         _listenGameStateProvider = listenGameStateProvider,
         _listenLobbyProvider = listenLobbyProvider,
+        _player = player,
         super(const LobbyState()) {
     on<LoadLobbyEvent>(_load, transformer: droppable());
     on<SetLeaderLobbyEvent>(_setLeader, transformer: restartable());
@@ -67,11 +70,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
   final DateTimeProvider _dateTimeProvider;
   final ListenGameStateProvider _listenGameStateProvider;
   final ListenLobbyProvider _listenLobbyProvider;
+  final AudioPlayer _player;
   StreamSubscription<GameState>? _stateSub;
   StreamSubscription<Lobby>? _lobbySub;
   Timer? _timer;
 
   void dispose() {
+    _player.stop();
+
     _timer?.cancel();
 
     _stateSub?.cancel();
@@ -194,6 +200,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     );
 
     _timer?.cancel();
+    await _player.stop();
 
     int? secondsLeft;
     if (gameState is PlayingGameState) {
@@ -206,6 +213,10 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
       if (secLeft <= 0) {
         secondsLeft = 0;
+      } else {
+        await _player
+            .seek(Duration(seconds: gameState.endsAfterSeconds - secLeft));
+        unawaited(_player.play());
       }
 
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -215,6 +226,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
         if (secondsLeft < 0) {
           timer.cancel();
+          _player.stop();
         } else {
           add(_UpdateTimeLobbyEvent(secondsLeft: secondsLeft));
         }
@@ -428,12 +440,19 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     }
 
     _timer?.cancel();
+    await _player.stop();
 
     if (gameState is PlayingGameState) {
       final startedAt =
           DateTime.fromMillisecondsSinceEpoch(gameState.startedAtMSSinceEpoch);
       final endsAt =
           startedAt.add(Duration(seconds: gameState.endsAfterSeconds));
+      final now = _dateTimeProvider.now();
+      final secondsLeft = endsAt.difference(now).inSeconds;
+
+      await _player
+          .seek(Duration(seconds: gameState.endsAfterSeconds - secondsLeft));
+      unawaited(_player.play());
 
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         final now = _dateTimeProvider.now();
@@ -441,6 +460,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
 
         if (secondsLeft < 0) {
           timer.cancel();
+          _player.stop();
         } else {
           add(_UpdateTimeLobbyEvent(secondsLeft: secondsLeft));
         }

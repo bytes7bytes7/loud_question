@@ -14,8 +14,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          _getIt.get<HomeBloc>()..add(const LoadLobbiesHomeEvent()),
+      create: (context) => _getIt.get<HomeBloc>()
+        ..init()
+        ..add(const LoadLobbiesHomeEvent()),
       child: Scaffold(
         appBar: const _AppBar(),
         body: const _Body(),

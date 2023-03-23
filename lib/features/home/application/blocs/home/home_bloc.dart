@@ -2,11 +2,13 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../common/application/application.dart';
 import '../../../../common/domain/domain.dart';
 import '../../../domain/services/home_service.dart';
 import '../../coordinators/home_coordinator.dart';
+import '../../providers/song_provider.dart';
 import '../../view_models/lobby_vm/lobby_vm.dart';
 
 part 'home_event.dart';
@@ -20,10 +22,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required HomeService homeService,
     required UserService userService,
     required HomeCoordinator coordinator,
+    required SongProvider songProvider,
+    required AudioPlayer player,
   })  : _authService = authService,
         _homeService = homeService,
         _userService = userService,
         _coordinator = coordinator,
+        _songProvider = songProvider,
+        _player = player,
         super(const HomeState()) {
     on<LogOutHomeEvent>(_logOut, transformer: droppable());
     on<LoadLobbiesHomeEvent>(_loadLobbies, transformer: droppable());
@@ -36,6 +42,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeService _homeService;
   final UserService _userService;
   final HomeCoordinator _coordinator;
+  final SongProvider _songProvider;
+  final AudioPlayer _player;
+
+  Future<void> init() async {
+    await _player.setUrl(_songProvider.url);
+    await _player.load();
+  }
 
   Future<void> _logOut(LogOutHomeEvent event, Emitter<HomeState> emit) async {
     try {

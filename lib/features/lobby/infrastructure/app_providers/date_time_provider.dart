@@ -8,6 +8,6 @@ class ProdDateTimeProvider implements DateTimeProvider {
 
   @override
   DateTime now() {
-    return DateTime.now();
+    return DateTime.now().toUtc();
   }
 }

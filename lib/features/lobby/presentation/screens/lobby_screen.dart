@@ -99,15 +99,19 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    return AppBar(
-      title: Text('Лобби $lobbyID'),
-      actions: [
-        if (bloc.state.showRestartGameBtn)
-          IconButton(
-            icon: const Icon(Icons.restart_alt),
-            onPressed: openAlert,
-          ),
-      ],
+    return BlocBuilder<LobbyBloc, LobbyState>(
+      builder: (context, state) {
+        return AppBar(
+          title: Text('Лобби $lobbyID'),
+          actions: [
+            if (bloc.state.showRestartGameBtn)
+              IconButton(
+                icon: const Icon(Icons.restart_alt),
+                onPressed: openAlert,
+              ),
+          ],
+        );
+      },
     );
   }
 }
