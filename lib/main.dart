@@ -5,9 +5,14 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'main/main.dart';
 
+final _logger = Logger('Main');
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _configLogger(printLogs: true);
+
+  _logger.info('App is started');
+
   await configInjector(env: 'prod');
   setPathUrlStrategy();
 

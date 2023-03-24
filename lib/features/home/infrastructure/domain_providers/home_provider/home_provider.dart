@@ -44,4 +44,8 @@ abstract class ProdHomeProvider implements HomeProvider {
     @Path() String id,
     @Body() JoinLobbyRequest request,
   );
+
+  @override
+  @GET('/song')
+  Future<JsonEitherWrapper<ProblemDetails, GetSongResponse>> getSong();
 }

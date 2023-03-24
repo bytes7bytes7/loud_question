@@ -26,6 +26,7 @@ dependencies:
   json_annotation: ^4.8.0
   just_audio: ^0.9.32
   logging: ^1.1.1
+  ntp: ^2.0.0
   problem_details: ^0.0.2
   retrofit: ^4.0.1
   rxdart: ^0.27.7

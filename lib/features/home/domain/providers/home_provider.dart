@@ -14,4 +14,6 @@ abstract class HomeProvider {
     String id,
     JoinLobbyRequest request,
   );
+
+  Future<JsonEitherWrapper<ProblemDetails, GetSongResponse>> getSong();
 }

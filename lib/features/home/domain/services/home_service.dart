@@ -21,7 +21,7 @@ class HomeService {
     try {
       response = await _homeProvider.getLobbies();
     } catch (e) {
-      throw Exception();
+      rethrow;
     }
 
     return response.value.fold(
@@ -43,7 +43,7 @@ class HomeService {
     try {
       response = await _homeProvider.createLobby(request);
     } catch (e) {
-      throw Exception();
+      rethrow;
     }
 
     return response.value.fold(
@@ -66,7 +66,7 @@ class HomeService {
     try {
       response = await _homeProvider.joinLobby(id, request);
     } catch (e) {
-      throw Exception();
+      rethrow;
     }
 
     return response.value.fold(
@@ -85,6 +85,22 @@ class HomeService {
       (r) {
         return r.lobby;
       },
+    );
+  }
+
+  Future<List<int>> getSong() async {
+    late JsonEitherWrapper<ProblemDetails, GetSongResponse> response;
+    try {
+      response = await _homeProvider.getSong();
+    } catch (e) {
+      rethrow;
+    }
+
+    return response.value.fold(
+      (l) {
+        throw Exception();
+      },
+      (r) => r.bytes,
     );
   }
 }
