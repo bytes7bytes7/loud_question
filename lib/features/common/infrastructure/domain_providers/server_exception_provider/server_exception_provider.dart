@@ -1,10 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../gen/assets.gen.dart';
 import '../../../../../utils/typedef.dart';
 import '../../../domain/providers/server_exception_provider.dart';
 
@@ -26,10 +22,10 @@ class ProdServerExceptionProvider implements ServerExceptionProvider {
 
   @FactoryMethod(preResolve: true)
   static Future<ProdServerExceptionProvider> create() async {
-    final rawJson = await rootBundle.loadString(Assets.json.serverExceptions);
-    final map = jsonDecode(rawJson);
-
-    return ProdServerExceptionProvider.fromJson(map);
+    return ProdServerExceptionProvider.fromJson({
+      'name_is_already_in_use': 'Name is already in use.',
+      'invalid_credentials': 'Invalid credentials.',
+    });
   }
 
   factory ProdServerExceptionProvider.fromJson(JsonMap json) =>

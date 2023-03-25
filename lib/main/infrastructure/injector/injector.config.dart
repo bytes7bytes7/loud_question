@@ -32,7 +32,7 @@ import 'package:loud_question/features/common/domain/dto/log_in_response/log_in_
 import 'package:loud_question/features/common/domain/dto/log_out_response/log_out_response.dart'
     as _i26;
 import 'package:loud_question/features/common/domain/dto/register_response/register_response.dart'
-    as _i34;
+    as _i22;
 import 'package:loud_question/features/common/domain/dto/verify_token_response/verify_token_response.dart'
     as _i12;
 import 'package:loud_question/features/common/domain/providers/auth_exception_provider.dart'
@@ -64,7 +64,7 @@ import 'package:loud_question/features/common/infrastructure/json_converters/log
 import 'package:loud_question/features/common/infrastructure/json_converters/log_out_response_json_converter.dart'
     as _i27;
 import 'package:loud_question/features/common/infrastructure/json_converters/register_response_json_converter.dart'
-    as _i35;
+    as _i23;
 import 'package:loud_question/features/common/infrastructure/json_converters/verify_token_response_json_converter.dart'
     as _i13;
 import 'package:loud_question/features/home/application/application.dart'
@@ -78,7 +78,7 @@ import 'package:loud_question/features/home/domain/dto/create_lobby_response/cre
 import 'package:loud_question/features/home/domain/dto/get_lobbies_response/get_lobbies_response.dart'
     as _i16;
 import 'package:loud_question/features/home/domain/dto/get_song_response/get_song_response.dart'
-    as _i22;
+    as _i38;
 import 'package:loud_question/features/home/domain/dto/join_lobby_response/join_lobby_response.dart'
     as _i18;
 import 'package:loud_question/features/home/domain/providers/home_provider.dart'
@@ -92,7 +92,7 @@ import 'package:loud_question/features/home/infrastructure/json_converters/creat
 import 'package:loud_question/features/home/infrastructure/json_converters/get_lobbies_response_json_converter.dart'
     as _i17;
 import 'package:loud_question/features/home/infrastructure/json_converters/get_song_response_json_converter.dart'
-    as _i23;
+    as _i39;
 import 'package:loud_question/features/home/infrastructure/json_converters/join_lobby_response_json_converter.dart'
     as _i19;
 import 'package:loud_question/features/lobby/application/application.dart'
@@ -105,7 +105,7 @@ import 'package:loud_question/features/lobby/domain/domain.dart' as _i62;
 import 'package:loud_question/features/lobby/domain/dto/game_state_response/game_state_response.dart'
     as _i36;
 import 'package:loud_question/features/lobby/domain/dto/get_lobby_response/get_lobby_response.dart'
-    as _i38;
+    as _i34;
 import 'package:loud_question/features/lobby/domain/dto/listen_lobby_response/listen_lobby_response.dart'
     as _i20;
 import 'package:loud_question/features/lobby/domain/dto/set_leader_request/set_leader_request.dart'
@@ -135,7 +135,7 @@ import 'package:loud_question/features/lobby/infrastructure/domain_providers/lob
 import 'package:loud_question/features/lobby/infrastructure/json_converters/game_state_response_json_converter.dart'
     as _i37;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/get_lobby_response_json_converter.dart'
-    as _i39;
+    as _i35;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/listen_lobby_response_json_converter.dart'
     as _i21;
 import 'package:loud_question/features/lobby/infrastructure/json_converters/set_leader_request_json_converter.dart'
@@ -225,8 +225,8 @@ Future<_i1.GetIt> init(
   gh.singleton<
           _i11.JsonConverter<_i20.ListenLobbyResponse, Map<String, Object?>>>(
       _i21.ListenLobbyResponseJsonConverter());
-  gh.singleton<_i11.JsonConverter<_i22.GetSongResponse, Map<String, Object?>>>(
-      _i23.GetSongResponseJsonConverter());
+  gh.singleton<_i11.JsonConverter<_i22.RegisterResponse, Map<String, Object?>>>(
+      _i23.RegisterResponseJsonConverter());
   gh.singleton<_i11.JsonConverter<_i24.SetLeaderRequest, Map<String, Object?>>>(
       _i25.SetLeaderRequestJsonConverter());
   gh.singleton<_i11.JsonConverter<_i26.LogOutResponse, Map<String, Object?>>>(
@@ -237,13 +237,13 @@ Future<_i1.GetIt> init(
       _i31.GetUserResponseJsonConverter());
   gh.singleton<_i11.JsonConverter<_i32.ProblemDetails, Map<String, Object?>>>(
       _i33.ProblemDetailsJsonConverter());
-  gh.singleton<_i11.JsonConverter<_i34.RegisterResponse, Map<String, Object?>>>(
-      _i35.RegisterResponseJsonConverter());
+  gh.singleton<_i11.JsonConverter<_i34.GetLobbyResponse, Map<String, Object?>>>(
+      _i35.GetLobbyResponseJsonConverter());
   gh.singleton<
           _i11.JsonConverter<_i36.GameStateResponse, Map<String, Object?>>>(
       _i37.GameStateResponseJsonConverter());
-  gh.singleton<_i11.JsonConverter<_i38.GetLobbyResponse, Map<String, Object?>>>(
-      _i39.GetLobbyResponseJsonConverter());
+  gh.singleton<_i11.JsonConverter<_i38.GetSongResponse, Map<String, Object?>>>(
+      _i39.GetSongResponseJsonConverter());
   await gh.singletonAsync<_i40.ServerExceptionProvider>(
     () => _i41.ProdServerExceptionProvider.create(),
     preResolve: true,

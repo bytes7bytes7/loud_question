@@ -9,20 +9,8 @@
 
 import 'package:flutter/widgets.dart';
 
-class $AssetsJsonGen {
-  const $AssetsJsonGen();
-
-  /// File path: assets/json/server_exceptions.json
-  String get serverExceptions => 'assets/json/server_exceptions.json';
-
-  /// List of all assets
-  List<String> get values => [serverExceptions];
-}
-
 class Assets {
   Assets._();
-
-  static const $AssetsJsonGen json = $AssetsJsonGen();
 }
 
 class AssetGenImage {

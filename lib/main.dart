@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:url_strategy/url_strategy.dart';
 
 import 'main/main.dart';
 
@@ -14,7 +13,6 @@ Future<void> main() async {
   _logger.info('App is started');
 
   await configInjector(env: 'prod');
-  setPathUrlStrategy();
 
   runApp(const App());
 }
