@@ -119,19 +119,19 @@ class _TrailingIcon extends StatelessWidget {
       );
     }
 
-    if (state == UserState.rightAnswer) {
-      return Icon(
-        Icons.done_all,
-        color: theme.colorScheme.primary,
-      );
-    }
-
-    if (state == UserState.wrongAnswer) {
-      return Icon(
-        Icons.error_outline,
-        color: theme.colorScheme.error,
-      );
-    }
+    // if (state == UserState.rightAnswer) {
+    //   return Icon(
+    //     Icons.done_all,
+    //     color: theme.colorScheme.primary,
+    //   );
+    // }
+    //
+    // if (state == UserState.wrongAnswer) {
+    //   return Icon(
+    //     Icons.error_outline,
+    //     color: theme.colorScheme.error,
+    //   );
+    // }
 
     return const SizedBox.shrink();
   }

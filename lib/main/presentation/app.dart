@@ -14,8 +14,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final router = _getIt.get<GoRouter>();
+
     return MaterialApp.router(
-      routerConfig: _getIt.get<GoRouter>(),
+      routerConfig: router,
       title: 'Load Question',
       debugShowCheckedModeBanner: false,
       theme: _theme.copyWith(

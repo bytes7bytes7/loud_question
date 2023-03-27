@@ -682,11 +682,6 @@ class _CheckingStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final rightAnswersAmount = gameState.answers
-        .where(
-          (e) => e.answer.toLowerCase() == gameState.rightAnswer.toLowerCase(),
-        )
-        .length;
 
     return Stack(
       children: [
@@ -696,14 +691,14 @@ class _CheckingStateWidget extends StatelessWidget {
             // info bar, right answer, question, empty box, creator card
             itemCount: lobbyInfo.guests.length + 5,
             separatorBuilder: (context, index) {
-              if (index == 3) {
+              if (index == 2) {
                 // creator bar
                 return const TitleBar(
                   text: 'Я',
                 );
               }
 
-              if (index == 4) {
+              if (index == 3) {
                 // other players bar
                 return TitleBar(
                   text: 'Другие игроки (${lobbyInfo.guests.length})',
@@ -714,14 +709,6 @@ class _CheckingStateWidget extends StatelessWidget {
             },
             itemBuilder: (context, index) {
               if (index == 0) {
-                // info bar
-                return InfoBar(
-                  text: 'Верных ответов: $rightAnswersAmount/'
-                      '${lobbyInfo.guests.length + 1}',
-                );
-              }
-
-              if (index == 1) {
                 // right answer
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -744,7 +731,7 @@ class _CheckingStateWidget extends StatelessWidget {
                 );
               }
 
-              if (index == 2) {
+              if (index == 1) {
                 // question
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -766,12 +753,12 @@ class _CheckingStateWidget extends StatelessWidget {
                 );
               }
 
-              if (index == 3) {
+              if (index == 2) {
                 // empty box
                 return const SizedBox.shrink();
               }
 
-              if (index == 4) {
+              if (index == 3) {
                 // me
                 return UserCard(
                   user: lobbyInfo.me,
@@ -782,7 +769,7 @@ class _CheckingStateWidget extends StatelessWidget {
               }
 
               if (lobbyInfo.creator.id != lobbyInfo.me.id) {
-                if (index == 5) {
+                if (index == 4) {
                   return UserCard(
                     user: lobbyInfo.creator,
                     answer: gameState.answers
@@ -793,7 +780,7 @@ class _CheckingStateWidget extends StatelessWidget {
                   );
                 }
 
-                final user = lobbyInfo.guests[index - 6];
+                final user = lobbyInfo.guests[index - 5];
                 return UserCard(
                   user: user,
                   answer: gameState.answers
@@ -802,7 +789,7 @@ class _CheckingStateWidget extends StatelessWidget {
                 );
               }
 
-              final user = lobbyInfo.guests[index - 5];
+              final user = lobbyInfo.guests[index - 4];
               return UserCard(
                 user: user,
                 answer: gameState.answers

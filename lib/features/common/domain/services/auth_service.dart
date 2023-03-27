@@ -38,6 +38,8 @@ class AuthService {
   Stream<bool> get onLoggedInChanged =>
       _userController.stream.map((e) => e != null);
 
+  bool get isLoggedIn => _userController.value != null;
+
   @PostConstruct(preResolve: true)
   Future<void> init() async {
     final token = await _tokenService.getToken();
@@ -153,12 +155,14 @@ class AuthService {
     try {
       response = await _authProvider.verifyToken();
     } catch (e) {
+      _userController.add(null);
       throw const ServerError();
     }
 
     await response.value.fold(
       (l) async {
         await _tokenService.removeToken();
+        _userController.add(null);
       },
       (r) async {
         final myID = await _accountRepository.getMyID();

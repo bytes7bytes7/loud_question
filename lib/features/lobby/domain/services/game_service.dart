@@ -53,7 +53,7 @@ class GameService {
     await _gameRepository.update(gameState: gameState);
   }
 
-  Future<void> setLeader({
+  Future<GameState> setLeader({
     required LobbyID id,
     required UserID userID,
   }) async {
@@ -64,12 +64,13 @@ class GameService {
         request,
       );
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not set leader');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -77,18 +78,19 @@ class GameService {
     }
   }
 
-  Future<void> setReady({
+  Future<GameState> setReady({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.setReady(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not set ready');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -96,18 +98,19 @@ class GameService {
     }
   }
 
-  Future<void> setNotReady({
+  Future<GameState> setNotReady({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.setNotReady(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not set notReady');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -115,18 +118,19 @@ class GameService {
     }
   }
 
-  Future<void> startGame({
+  Future<GameState> startGame({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.startGame(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not start game');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -134,18 +138,19 @@ class GameService {
     }
   }
 
-  Future<void> startAnswer({
+  Future<GameState> startAnswer({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.startAnswer(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not start answer');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -153,7 +158,7 @@ class GameService {
     }
   }
 
-  Future<void> giveAnswer({
+  Future<GameState> giveAnswer({
     required LobbyID id,
     required String answer,
   }) async {
@@ -161,12 +166,13 @@ class GameService {
       final request = GiveAnswerRequest(answer: answer);
       final response = await _gameProvider.giveAnswer(id.str, request);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not give answer');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -174,18 +180,19 @@ class GameService {
     }
   }
 
-  Future<void> getAnswer({
+  Future<GameState> getAnswer({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.getAnswer(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not get answer');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {
@@ -193,18 +200,19 @@ class GameService {
     }
   }
 
-  Future<void> restart({
+  Future<GameState> restart({
     required LobbyID id,
   }) async {
     try {
       final response = await _gameProvider.restart(id.str);
 
-      await response.value.fold(
+      return await response.value.fold(
         (l) {
           throw Exception('Can not restart game');
         },
         (r) async {
           await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
         },
       );
     } catch (e) {

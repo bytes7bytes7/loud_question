@@ -250,9 +250,16 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.setLeader(
+      final gameState = await _gameService.setLeader(
         id: _lobbyID,
         userID: UserID.fromString(event.userID),
+      );
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
       );
     } catch (e) {
       emit(
@@ -270,7 +277,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.setReady(id: _lobbyID);
+      final gameState = await _gameService.setReady(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка готовности'),
@@ -287,7 +301,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.setNotReady(id: _lobbyID);
+      final gameState = await _gameService.setNotReady(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка отмены готовности'),
@@ -304,7 +325,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.startGame(id: _lobbyID);
+      final gameState = await _gameService.startGame(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка начала игры'),
@@ -321,7 +349,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.startAnswer(id: _lobbyID);
+      final gameState = await _gameService.startAnswer(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка перехода к ответам'),
@@ -338,7 +373,15 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.giveAnswer(id: _lobbyID, answer: event.answer);
+      final gameState =
+          await _gameService.giveAnswer(id: _lobbyID, answer: event.answer);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка передачи ответа'),
@@ -355,7 +398,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.getAnswer(id: _lobbyID);
+      final gameState = await _gameService.getAnswer(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка получения правильного ответа'),
@@ -372,7 +422,14 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     emit(state.withLoading());
 
     try {
-      await _gameService.restart(id: _lobbyID);
+      final gameState = await _gameService.restart(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
     } catch (e) {
       emit(
         state.withError('Ошибка перезапуска игры'),
