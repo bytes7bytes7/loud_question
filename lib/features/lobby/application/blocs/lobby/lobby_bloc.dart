@@ -44,6 +44,7 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     on<SetReadyLobbyEvent>(_setReady, transformer: droppable());
     on<SetNotReadyLobbyEvent>(_setNotReady, transformer: droppable());
     on<StartGameLobbyEvent>(_startGame, transformer: droppable());
+    on<ChangeQuestionLobbyEvent>(_changeQuestion, transformer: droppable());
     on<StartAnswerLobbyEvent>(_startAnswer, transformer: droppable());
     on<AnswerLobbyEvent>(_answer, transformer: droppable());
     on<CheckAnswerLobbyEvent>(_checkAnswer, transformer: droppable());
@@ -336,6 +337,30 @@ class LobbyBloc extends Bloc<LobbyEvent, LobbyState> {
     } catch (e) {
       emit(
         state.withError('Ошибка начала игры'),
+      );
+
+      return;
+    }
+  }
+
+  Future<void> _changeQuestion(
+    ChangeQuestionLobbyEvent event,
+    Emitter<LobbyState> emit,
+  ) async {
+    emit(state.withLoading());
+
+    try {
+      final gameState = await _gameService.changeQuestion(id: _lobbyID);
+
+      emit(
+        state.copyWith(
+          isLoading: false,
+          gameState: gameState,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.withError('Ошибка смены вопроса'),
       );
 
       return;

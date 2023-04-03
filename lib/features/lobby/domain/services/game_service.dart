@@ -138,6 +138,26 @@ class GameService {
     }
   }
 
+  Future<GameState> changeQuestion({
+    required LobbyID id,
+  }) async {
+    try {
+      final response = await _gameProvider.changeQuestion(id.str);
+
+      return await response.value.fold(
+        (l) {
+          throw Exception('Can not change question');
+        },
+        (r) async {
+          await _gameRepository.update(gameState: r.gameState);
+          return r.gameState;
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<GameState> startAnswer({
     required LobbyID id,
   }) async {

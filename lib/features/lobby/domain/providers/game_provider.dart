@@ -31,6 +31,10 @@ abstract class GameProvider {
     String id,
   );
 
+  Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> changeQuestion(
+    String id,
+  );
+
   Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> startAnswer(
     String id,
   );

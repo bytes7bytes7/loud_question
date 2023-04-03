@@ -34,6 +34,10 @@ class StartGameLobbyEvent extends LobbyEvent {
   const StartGameLobbyEvent();
 }
 
+class ChangeQuestionLobbyEvent extends LobbyEvent {
+  const ChangeQuestionLobbyEvent();
+}
+
 class StartAnswerLobbyEvent extends LobbyEvent {
   const StartAnswerLobbyEvent();
 }

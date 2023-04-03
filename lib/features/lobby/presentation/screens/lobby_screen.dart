@@ -477,7 +477,8 @@ class _PlayingStateWidget extends StatelessWidget {
               ),
             ],
           ),
-          if (bloc.state.showMoveToAnsweringBtn)
+          if (!bloc.state.showMoveToAnsweringBtn &&
+              bloc.state.showChangeQuestionBtn)
             Positioned(
               left: 0,
               right: 0,
@@ -487,12 +488,44 @@ class _PlayingStateWidget extends StatelessWidget {
                   horizontal: 20,
                 ),
                 child: ElevatedButton(
-                  child: const Text('Перейти к ответам'),
-                  onPressed: () => bloc.add(const StartAnswerLobbyEvent()),
+                  child: const Text('Другой вопрос'),
+                  onPressed: () => bloc.add(const ChangeQuestionLobbyEvent()),
                 ),
               ),
             ),
-          // for refresh indicator
+          if (bloc.state.showMoveToAnsweringBtn &&
+              bloc.state.showChangeQuestionBtn)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 30,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        child: const Text('Другой вопрос'),
+                        onPressed: () =>
+                            bloc.add(const ChangeQuestionLobbyEvent()),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        child: const Text('Перейти к ответам'),
+                        onPressed: () =>
+                            bloc.add(const StartAnswerLobbyEvent()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

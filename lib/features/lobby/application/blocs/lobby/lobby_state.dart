@@ -69,6 +69,17 @@ class LobbyState extends Equatable with Loadable, Errorable {
     return state.readyIDs.length == lobby.guests.length + 1;
   }
 
+  bool get showChangeQuestionBtn {
+    final state = gameState;
+    final lobby = lobbyInfo;
+
+    if (state is! PlayingGameState || lobby == null) {
+      return false;
+    }
+
+    return lobby.me.id == state.leaderID.str;
+  }
+
   bool get showMoveToAnsweringBtn {
     final state = gameState;
     final lobby = lobbyInfo;

@@ -65,6 +65,12 @@ abstract class ProdGameProvider implements GameProvider {
   );
 
   @override
+  @POST('/{id}/change_question')
+  Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> changeQuestion(
+    @Path() String id,
+  );
+
+  @override
   @POST('/{id}/start_answer')
   Future<JsonEitherWrapper<ProblemDetails, GameStateResponse>> startAnswer(
     @Path() String id,
