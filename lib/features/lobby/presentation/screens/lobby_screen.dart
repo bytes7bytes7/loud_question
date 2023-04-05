@@ -721,8 +721,8 @@ class _CheckingStateWidget extends StatelessWidget {
         RefreshIndicator(
           onRefresh: () async => bloc.add(const LoadLobbyEvent()),
           child: ListView.separated(
-            // info bar, right answer, question, empty box, creator card
-            itemCount: lobbyInfo.guests.length + 5,
+            // right answer, question, empty box, creator card
+            itemCount: lobbyInfo.guests.length + 4,
             separatorBuilder: (context, index) {
               if (index == 2) {
                 // creator bar
